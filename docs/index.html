@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>L1 Neuron Atlas</title>
+  <meta name="description" content="Interactive 3D viewer of differentiated and SU neurons and compartments in the first-instar Drosophila larval connectome.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <aside id="panel">
+    <header class="brand">
+      <h1>L1 Neuron Atlas</h1>
+      <p>First-instar <i>Drosophila</i> larval connectome · PK_L1CNSsym</p>
+    </header>
+
+    <section class="block">
+      <label class="lbl" for="lineage">Lineage</label>
+      <select id="lineage">
+        <option value="">Select a lineage…</option>
+      </select>
+      <p id="lineage-meta" class="hint"></p>
+    </section>
+
+    <section class="block">
+      <span class="lbl">Hemisphere</span>
+      <div class="seg" id="hemi">
+        <button data-v="L">Left</button>
+        <button data-v="R">Right</button>
+        <button data-v="B">Both</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <span class="lbl">Neurons</span>
+      <div class="seg" id="cat">
+        <button data-v="D">Diff</button>
+        <button data-v="S">SU</button>
+        <button data-v="B">Both</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <span class="lbl">Color by</span>
+      <div class="seg" id="colorby">
+        <button data-v="type">Type</button>
+        <button data-v="class">Class</button>
+      </div>
+    </section>
+
+    <section class="block sliders">
+      <label class="lbl" for="width">Line width <output id="width-out"></output></label>
+      <input type="range" id="width" min="0.5" max="6" step="0.25">
+      <label class="lbl" for="alpha">Neuron opacity <output id="alpha-out"></output></label>
+      <input type="range" id="alpha" min="0.05" max="1" step="0.01">
+    </section>
+
+    <section class="block sliders">
+      <span class="lbl">Brain</span>
+      <label class="check"><input type="checkbox" id="brain"> Brain Mesh</label>
+      <label class="check"><input type="checkbox" id="neuropil"> Neuropil</label>
+      <label class="lbl" for="opacity">Brain opacity <output id="opacity-out"></output></label>
+      <input type="range" id="opacity" min="0.02" max="0.8" step="0.01">
+    </section>
+
+    <section class="block">
+      <div class="lbl-row">
+        <span class="lbl">Compartments</span>
+        <button class="link" id="comp-clear">None</button>
+      </div>
+      <div id="tree"></div>
+      <p class="hint">Click a compartment's color square to set its color and opacity.</p>
+    </section>
+
+    <section class="block">
+      <span class="lbl">View</span>
+      <div class="seg" id="views">
+        <button data-v="frontal">Frontal</button>
+        <button data-v="dorsal">Dorsal</button>
+        <button data-v="lateral">Lateral</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <span class="lbl">Export</span>
+      <div class="row">
+        <select id="png-scale" aria-label="PNG scale">
+          <option value="1">1×</option>
+          <option value="2" selected>2×</option>
+          <option value="4">4×</option>
+        </select>
+        <label class="check"><input type="checkbox" id="png-transparent"> Transparent</label>
+      </div>
+      <div class="row">
+        <button class="btn" id="export-png">PNG</button>
+        <button class="btn" id="export-svg">SVG</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="row">
+        <button class="btn" id="copy-link">Copy link</button>
+        <button class="btn danger" id="clear-all">Clear all</button>
+      </div>
+    </section>
+  </aside>
+
+  <div id="picker" role="dialog" aria-label="Compartment color" hidden>
+    <div class="picker-head">
+      <b id="picker-title"></b>
+      <button class="link" id="picker-close" aria-label="Close">✕</button>
+    </div>
+    <label class="picker-row">Color <input type="color" id="picker-color"></label>
+    <label class="lbl" for="picker-alpha">Opacity <output id="picker-alpha-out"></output></label>
+    <input type="range" id="picker-alpha" min="0" max="1" step="0.01">
+    <button class="link" id="picker-reset">Reset to default</button>
+  </div>
+
+  <main id="stage">
+    <canvas id="view"></canvas>
+    <div id="legend" hidden>
+      <div class="legend-head">
+        <span id="legend-title">Groups</span>
+        <span>
+          <button class="link" id="legend-all">All</button>
+          <button class="link" id="legend-none">None</button>
+        </span>
+      </div>
+      <div id="legend-body"></div>
+      <p class="hint">Click to toggle · double-click to isolate</p>
+    </div>
+    <div id="tooltip" hidden></div>
+    <div id="status" hidden></div>
+    <div id="empty">Select a lineage to begin. Drag to rotate, right-drag to pan, scroll to zoom.</div>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

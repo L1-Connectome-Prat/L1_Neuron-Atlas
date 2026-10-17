@@ -1,0 +1,2027 @@
+{
+ "space": "PK_L1CNSsym",
+ "units": "um",
+ "palette": [
+  "#e6194b",
+  "#3cb44b",
+  "#4363d8",
+  "#f58231",
+  "#911eb4",
+  "#42d4f4",
+  "#f032e6",
+  "#bfef45",
+  "#fabed4",
+  "#469990",
+  "#dcbeff",
+  "#9A6324",
+  "#800000",
+  "#aaffc3",
+  "#808000",
+  "#ffd8b1",
+  "#000075",
+  "#a9a9a9"
+ ],
+ "compartments": [
+  {
+   "id": "AL",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 10271,
+     "nf": 20568,
+     "file": "meshes/AL_Left.bin"
+    },
+    "Right": {
+     "nv": 1776,
+     "nf": 3548,
+     "file": "meshes/AL_Right.bin"
+    }
+   },
+   "children": []
+  },
+  {
+   "id": "LAL",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 2630,
+     "nf": 5260,
+     "file": "meshes/LAL_Left.bin"
+    },
+    "Right": {
+     "nv": 2983,
+     "nf": 5966,
+     "file": "meshes/LAL_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "LALcd",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 2002,
+       "nf": 4184,
+       "file": "meshes/LALcd_Left.bin"
+      },
+      "Right": {
+       "nv": 1749,
+       "nf": 3494,
+       "file": "meshes/LALcd_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "LALcv",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 3578,
+       "nf": 7151,
+       "file": "meshes/LALcv_Left.bin"
+      },
+      "Right": {
+       "nv": 3578,
+       "nf": 7156,
+       "file": "meshes/LALcv_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "LALld",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1672,
+       "nf": 3540,
+       "file": "meshes/LALld_Left.bin"
+      },
+      "Right": {
+       "nv": 1039,
+       "nf": 2074,
+       "file": "meshes/LALld_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "LALlv",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1196,
+       "nf": 2388,
+       "file": "meshes/LALlv_Left.bin"
+      },
+      "Right": {
+       "nv": 1234,
+       "nf": 2468,
+       "file": "meshes/LALlv_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "LALm",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 4671,
+       "nf": 9338,
+       "file": "meshes/LALm_Left.bin"
+      },
+      "Right": {
+       "nv": 3298,
+       "nf": 6594,
+       "file": "meshes/LALm_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "SLP",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 6133,
+     "nf": 12264,
+     "file": "meshes/SLP_Left.bin"
+    },
+    "Right": {
+     "nv": 6249,
+     "nf": 12724,
+     "file": "meshes/SLP_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "LH",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 553,
+       "nf": 1102,
+       "file": "meshes/LH_Left.bin"
+      },
+      "Right": {
+       "nv": 644,
+       "nf": 1304,
+       "file": "meshes/LH_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "SLPcc",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 9243,
+       "nf": 18606,
+       "file": "meshes/SLPcc_Left.bin"
+      },
+      "Right": {
+       "nv": 8171,
+       "nf": 16590,
+       "file": "meshes/SLPcc_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "SLPl",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 2478,
+       "nf": 4952,
+       "file": "meshes/SLPl_Left.bin"
+      },
+      "Right": {
+       "nv": 2189,
+       "nf": 4394,
+       "file": "meshes/SLPl_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "SLPpd",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1796,
+       "nf": 3588,
+       "file": "meshes/SLPpd_Left.bin"
+      },
+      "Right": {
+       "nv": 1353,
+       "nf": 2704,
+       "file": "meshes/SLPpd_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "SLPpv",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1216,
+       "nf": 2428,
+       "file": "meshes/SLPpv_Left.bin"
+      },
+      "Right": {
+       "nv": 778,
+       "nf": 1572,
+       "file": "meshes/SLPpv_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "SMP",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 3916,
+     "nf": 7838,
+     "file": "meshes/SMP_Left.bin"
+    },
+    "Right": {
+     "nv": 9599,
+     "nf": 19614,
+     "file": "meshes/SMP_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "SMPal",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 5044,
+       "nf": 10106,
+       "file": "meshes/SMPal_Left.bin"
+      },
+      "Right": {
+       "nv": 3511,
+       "nf": 7019,
+       "file": "meshes/SMPal_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "SMPc",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 8555,
+       "nf": 17120,
+       "file": "meshes/SMPc_Left.bin"
+      },
+      "Right": {
+       "nv": 13110,
+       "nf": 26564,
+       "file": "meshes/SMPc_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "VLP",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 4016,
+     "nf": 8028,
+     "file": "meshes/VLP_Left.bin"
+    },
+    "Right": {
+     "nv": 3299,
+     "nf": 6594,
+     "file": "meshes/VLP_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "VLPl",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 4361,
+       "nf": 8718,
+       "file": "meshes/VLPl_Left.bin"
+      },
+      "Right": {
+       "nv": 2530,
+       "nf": 5056,
+       "file": "meshes/VLPl_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "VLPm",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1676,
+       "nf": 3348,
+       "file": "meshes/VLPm_Left.bin"
+      },
+      "Right": {
+       "nv": 1932,
+       "nf": 3860,
+       "file": "meshes/VLPm_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "VMC",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 7856,
+     "nf": 15708,
+     "file": "meshes/VMC_Left.bin"
+    },
+    "Right": {
+     "nv": 8761,
+     "nf": 18128,
+     "file": "meshes/VMC_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "VMCc",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1544,
+       "nf": 3084,
+       "file": "meshes/VMCc_Left.bin"
+      },
+      "Right": {
+       "nv": 2499,
+       "nf": 4998,
+       "file": "meshes/VMCc_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "VMCl",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1932,
+       "nf": 3882,
+       "file": "meshes/VMCl_Left.bin"
+      },
+      "Right": {
+       "nv": 2478,
+       "nf": 4954,
+       "file": "meshes/VMCl_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "VMCm",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 4686,
+       "nf": 9364,
+       "file": "meshes/VMCm_Left.bin"
+      },
+      "Right": {
+       "nv": 6106,
+       "nf": 12557,
+       "file": "meshes/VMCm_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "VMCpd",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 2716,
+       "nf": 5428,
+       "file": "meshes/VMCpd_Left.bin"
+      },
+      "Right": {
+       "nv": 4039,
+       "nf": 8430,
+       "file": "meshes/VMCpd_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "VMCpv",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 3342,
+       "nf": 6684,
+       "file": "meshes/VMCpv_Left.bin"
+      },
+      "Right": {
+       "nv": 4194,
+       "nf": 8456,
+       "file": "meshes/VMCpv_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "MB-sansCA",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 22401,
+     "nf": 44798,
+     "file": "meshes/MB-sansCA_Left.bin"
+    },
+    "Right": {
+     "nv": 24897,
+     "nf": 49794,
+     "file": "meshes/MB-sansCA_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "MB-IP",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 3849,
+       "nf": 7694,
+       "file": "meshes/MB-IP_Left.bin"
+      },
+      "Right": {
+       "nv": 4182,
+       "nf": 8360,
+       "file": "meshes/MB-IP_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-IT",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 2975,
+       "nf": 5946,
+       "file": "meshes/MB-IT_Left.bin"
+      },
+      "Right": {
+       "nv": 2400,
+       "nf": 4796,
+       "file": "meshes/MB-IT_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-IVL",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1615,
+       "nf": 3230,
+       "file": "meshes/MB-IVL_Left.bin"
+      },
+      "Right": {
+       "nv": 1712,
+       "nf": 3424,
+       "file": "meshes/MB-IVL_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-LA",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1692,
+       "nf": 3384,
+       "file": "meshes/MB-LA_Left.bin"
+      },
+      "Right": {
+       "nv": 1924,
+       "nf": 3848,
+       "file": "meshes/MB-LA_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-LP",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 2237,
+       "nf": 4474,
+       "file": "meshes/MB-LP_Left.bin"
+      },
+      "Right": {
+       "nv": 2036,
+       "nf": 4072,
+       "file": "meshes/MB-LP_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-LT",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1445,
+       "nf": 2890,
+       "file": "meshes/MB-LT_Left.bin"
+      },
+      "Right": {
+       "nv": 1935,
+       "nf": 3866,
+       "file": "meshes/MB-LT_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-LVL",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1659,
+       "nf": 3314,
+       "file": "meshes/MB-LVL_Left.bin"
+      },
+      "Right": {
+       "nv": 2151,
+       "nf": 4298,
+       "file": "meshes/MB-LVL_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-SHA",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1515,
+       "nf": 3030,
+       "file": "meshes/MB-SHA_Left.bin"
+      },
+      "Right": {
+       "nv": 2038,
+       "nf": 4076,
+       "file": "meshes/MB-SHA_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-UT",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 1999,
+       "nf": 3994,
+       "file": "meshes/MB-UT_Left.bin"
+      },
+      "Right": {
+       "nv": 2001,
+       "nf": 3998,
+       "file": "meshes/MB-UT_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "MB-UVL",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 2061,
+       "nf": 4118,
+       "file": "meshes/MB-UVL_Left.bin"
+      },
+      "Right": {
+       "nv": 2576,
+       "nf": 5148,
+       "file": "meshes/MB-UVL_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "MB-CA",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 3695,
+     "nf": 7390,
+     "file": "meshes/MB-CA_Left.bin"
+    },
+    "Right": {
+     "nv": 4386,
+     "nf": 8772,
+     "file": "meshes/MB-CA_Right.bin"
+    }
+   },
+   "children": []
+  },
+  {
+   "id": "MB-ACA",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 1226,
+     "nf": 2454,
+     "file": "meshes/MB-ACA_Left.bin"
+    },
+    "Right": {
+     "nv": 1474,
+     "nf": 2946,
+     "file": "meshes/MB-ACA_Right.bin"
+    }
+   },
+   "children": []
+  },
+  {
+   "id": "TR",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 6951,
+     "nf": 13902,
+     "file": "meshes/TR_Left.bin"
+    },
+    "Right": {
+     "nv": 6168,
+     "nf": 12334,
+     "file": "meshes/TR_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "TRdl",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 4420,
+       "nf": 8836,
+       "file": "meshes/TRdl_Left.bin"
+      },
+      "Right": {
+       "nv": 5320,
+       "nf": 10731,
+       "file": "meshes/TRdl_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "TRdm",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 4224,
+       "nf": 8448,
+       "file": "meshes/TRdm_Left.bin"
+      },
+      "Right": {
+       "nv": 4749,
+       "nf": 9563,
+       "file": "meshes/TRdm_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "TRint",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 3587,
+       "nf": 7170,
+       "file": "meshes/TRint_Left.bin"
+      },
+      "Right": {
+       "nv": 2092,
+       "nf": 4180,
+       "file": "meshes/TRint_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "TRv",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 2801,
+       "nf": 5602,
+       "file": "meshes/TRv_Left.bin"
+      },
+      "Right": {
+       "nv": 4291,
+       "nf": 8624,
+       "file": "meshes/TRv_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "IPA",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 37734,
+     "nf": 75480,
+     "file": "meshes/IPA_Left.bin"
+    },
+    "Right": {
+     "nv": 11556,
+     "nf": 23966,
+     "file": "meshes/IPA_Right.bin"
+    }
+   },
+   "children": []
+  },
+  {
+   "id": "IPP",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 1488,
+     "nf": 2976,
+     "file": "meshes/IPP_Left.bin"
+    },
+    "Right": {
+     "nv": 2340,
+     "nf": 4680,
+     "file": "meshes/IPP_Right.bin"
+    }
+   },
+   "children": []
+  },
+  {
+   "id": "IPLM",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 13435,
+     "nf": 26876,
+     "file": "meshes/IPLM_Left.bin"
+    },
+    "Right": {
+     "nv": 12337,
+     "nf": 24702,
+     "file": "meshes/IPLM_Right.bin"
+    }
+   },
+   "children": []
+  },
+  {
+   "id": "LON",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 694,
+     "nf": 1380,
+     "file": "meshes/LON_Left.bin"
+    },
+    "Right": {
+     "nv": 651,
+     "nf": 1294,
+     "file": "meshes/LON_Right.bin"
+    }
+   },
+   "children": []
+  },
+  {
+   "id": "SEZneu",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 319,
+     "nf": 634,
+     "file": "meshes/SEZneu_Left.bin"
+    },
+    "Right": {
+     "nv": 328,
+     "nf": 652,
+     "file": "meshes/SEZneu_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "MXneu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 192,
+       "nf": 380,
+       "file": "meshes/MXneu_Left.bin"
+      },
+      "Right": {
+       "nv": 217,
+       "nf": 430,
+       "file": "meshes/MXneu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "LBneu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 184,
+       "nf": 364,
+       "file": "meshes/LBneu_Left.bin"
+      },
+      "Right": {
+       "nv": 176,
+       "nf": 348,
+       "file": "meshes/LBneu_Right.bin"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "VNCneu",
+   "level": 1,
+   "sides": {
+    "Left": {
+     "nv": 1208,
+     "nf": 2412,
+     "file": "meshes/VNCneu_Left.bin"
+    },
+    "Right": {
+     "nv": 1343,
+     "nf": 2682,
+     "file": "meshes/VNCneu_Right.bin"
+    }
+   },
+   "children": [
+    {
+     "id": "T1neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 184,
+       "nf": 364,
+       "file": "meshes/T1neu_Left.bin"
+      },
+      "Right": {
+       "nv": 199,
+       "nf": 394,
+       "file": "meshes/T1neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "T2neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 133,
+       "nf": 262,
+       "file": "meshes/T2neu_Left.bin"
+      },
+      "Right": {
+       "nv": 171,
+       "nf": 338,
+       "file": "meshes/T2neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "T3neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 135,
+       "nf": 266,
+       "file": "meshes/T3neu_Left.bin"
+      },
+      "Right": {
+       "nv": 175,
+       "nf": 346,
+       "file": "meshes/T3neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A1neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 132,
+       "nf": 260,
+       "file": "meshes/A1neu_Left.bin"
+      },
+      "Right": {
+       "nv": 169,
+       "nf": 334,
+       "file": "meshes/A1neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A2neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 127,
+       "nf": 250,
+       "file": "meshes/A2neu_Left.bin"
+      },
+      "Right": {
+       "nv": 138,
+       "nf": 272,
+       "file": "meshes/A2neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A3neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 166,
+       "nf": 328,
+       "file": "meshes/A3neu_Left.bin"
+      },
+      "Right": {
+       "nv": 156,
+       "nf": 308,
+       "file": "meshes/A3neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A4neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 145,
+       "nf": 286,
+       "file": "meshes/A4neu_Left.bin"
+      },
+      "Right": {
+       "nv": 159,
+       "nf": 314,
+       "file": "meshes/A4neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A5neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 149,
+       "nf": 294,
+       "file": "meshes/A5neu_Left.bin"
+      },
+      "Right": {
+       "nv": 166,
+       "nf": 328,
+       "file": "meshes/A5neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A6neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 160,
+       "nf": 316,
+       "file": "meshes/A6neu_Left.bin"
+      },
+      "Right": {
+       "nv": 188,
+       "nf": 372,
+       "file": "meshes/A6neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A7neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 136,
+       "nf": 268,
+       "file": "meshes/A7neu_Left.bin"
+      },
+      "Right": {
+       "nv": 153,
+       "nf": 302,
+       "file": "meshes/A7neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A8neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 158,
+       "nf": 312,
+       "file": "meshes/A8neu_Left.bin"
+      },
+      "Right": {
+       "nv": 155,
+       "nf": 306,
+       "file": "meshes/A8neu_Right.bin"
+      }
+     }
+    },
+    {
+     "id": "A9neu",
+     "level": 2,
+     "sides": {
+      "Left": {
+       "nv": 184,
+       "nf": 364,
+       "file": "meshes/A9neu_Left.bin"
+      },
+      "Right": {
+       "nv": 195,
+       "nf": 386,
+       "file": "meshes/A9neu_Right.bin"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "lineages": [
+  {
+   "name": "BAla1/2",
+   "key": "BAla12",
+   "counts": {
+    "Diff_Left": 22,
+    "Diff_Right": 22,
+    "SU_Left": 2,
+    "SU_Right": 1
+   }
+  },
+  {
+   "name": "BAla3/4",
+   "key": "BAla34",
+   "counts": {
+    "Diff_Left": 41,
+    "Diff_Right": 41,
+    "SU_Left": 7,
+    "SU_Right": 6
+   }
+  },
+  {
+   "name": "BAlc",
+   "key": "BAlc",
+   "counts": {
+    "Diff_Left": 33,
+    "Diff_Right": 32,
+    "SU_Left": 7,
+    "SU_Right": 10
+   }
+  },
+  {
+   "name": "BAlp1-3",
+   "key": "BAlp1-3",
+   "counts": {
+    "Diff_Left": 17,
+    "Diff_Right": 18,
+    "SU_Left": 17,
+    "SU_Right": 14
+   }
+  },
+  {
+   "name": "BAlp4",
+   "key": "BAlp4",
+   "counts": {
+    "Diff_Left": 14,
+    "Diff_Right": 15,
+    "SU_Left": 2,
+    "SU_Right": 1
+   }
+  },
+  {
+   "name": "BAlv",
+   "key": "BAlv",
+   "counts": {
+    "Diff_Left": 12,
+    "Diff_Right": 12,
+    "SU_Left": 2,
+    "SU_Right": 3
+   }
+  },
+  {
+   "name": "BAmas1/2",
+   "key": "BAmas12",
+   "counts": {
+    "Diff_Left": 40,
+    "Diff_Right": 39,
+    "SU_Left": 10,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "BAmd1",
+   "key": "BAmd1",
+   "counts": {
+    "Diff_Left": 15,
+    "Diff_Right": 15,
+    "SU_Left": 8,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "BAmd2",
+   "key": "BAmd2",
+   "counts": {
+    "Diff_Left": 24,
+    "Diff_Right": 24,
+    "SU_Left": 10,
+    "SU_Right": 10
+   }
+  },
+  {
+   "name": "BAmv1/2",
+   "key": "BAmv12",
+   "counts": {
+    "Diff_Left": 23,
+    "Diff_Right": 23,
+    "SU_Left": 19,
+    "SU_Right": 17
+   }
+  },
+  {
+   "name": "BAmv3",
+   "key": "BAmv3",
+   "counts": {
+    "Diff_Left": 24,
+    "Diff_Right": 24
+   }
+  },
+  {
+   "name": "BApd",
+   "key": "BApd",
+   "counts": {
+    "Diff_Left": 8,
+    "Diff_Right": 8
+   }
+  },
+  {
+   "name": "BApv",
+   "key": "BApv",
+   "counts": {
+    "Diff_Left": 18,
+    "Diff_Right": 15,
+    "SU_Left": 1
+   }
+  },
+  {
+   "name": "BLAd1-4",
+   "key": "BLAd1-4",
+   "counts": {
+    "Diff_Left": 12,
+    "Diff_Right": 12,
+    "SU_Left": 4,
+    "SU_Right": 2
+   }
+  },
+  {
+   "name": "BLAl",
+   "key": "BLAl",
+   "counts": {
+    "Diff_Left": 13,
+    "Diff_Right": 13,
+    "SU_Left": 8,
+    "SU_Right": 6
+   }
+  },
+  {
+   "name": "BLAv1/2",
+   "key": "BLAv12",
+   "counts": {
+    "Diff_Left": 42,
+    "Diff_Right": 39,
+    "SU_Left": 15,
+    "SU_Right": 11
+   }
+  },
+  {
+   "name": "BLAvm",
+   "key": "BLAvm",
+   "counts": {
+    "Diff_Left": 20,
+    "Diff_Right": 21,
+    "SU_Left": 7,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "BLD1",
+   "key": "BLD1",
+   "counts": {
+    "Diff_Left": 8,
+    "Diff_Right": 8,
+    "SU_Left": 6,
+    "SU_Right": 5
+   }
+  },
+  {
+   "name": "BLD2-4",
+   "key": "BLD2-4",
+   "counts": {
+    "Diff_Left": 25,
+    "Diff_Right": 26,
+    "SU_Left": 10,
+    "SU_Right": 9
+   }
+  },
+  {
+   "name": "BLD5/6",
+   "key": "BLD56",
+   "counts": {
+    "Diff_Left": 3,
+    "Diff_Right": 3,
+    "SU_Left": 3,
+    "SU_Right": 4
+   }
+  },
+  {
+   "name": "BLP1/2",
+   "key": "BLP12",
+   "counts": {
+    "Diff_Left": 31,
+    "Diff_Right": 33,
+    "SU_Left": 17,
+    "SU_Right": 16
+   }
+  },
+  {
+   "name": "BLP3/4",
+   "key": "BLP34",
+   "counts": {
+    "Diff_Left": 29,
+    "Diff_Right": 29,
+    "SU_Left": 24,
+    "SU_Right": 23
+   }
+  },
+  {
+   "name": "BLVa1/2",
+   "key": "BLVa12",
+   "counts": {
+    "Diff_Left": 22,
+    "Diff_Right": 23,
+    "SU_Left": 4,
+    "SU_Right": 5
+   }
+  },
+  {
+   "name": "BLVa3/4",
+   "key": "BLVa34",
+   "counts": {
+    "Diff_Left": 37,
+    "Diff_Right": 37,
+    "SU_Left": 11,
+    "SU_Right": 10
+   }
+  },
+  {
+   "name": "BLVp1",
+   "key": "BLVp1",
+   "counts": {
+    "Diff_Left": 13,
+    "Diff_Right": 13
+   }
+  },
+  {
+   "name": "BLVp2",
+   "key": "BLVp2",
+   "counts": {
+    "Diff_Left": 10,
+    "Diff_Right": 10,
+    "SU_Left": 6,
+    "SU_Right": 9
+   }
+  },
+  {
+   "name": "BolwigsAxon",
+   "key": "BolwigsAxon",
+   "counts": {
+    "Diff_Left": 13,
+    "Diff_Right": 16
+   }
+  },
+  {
+   "name": "CM1/3",
+   "key": "CM13",
+   "counts": {
+    "Diff_Left": 32,
+    "Diff_Right": 31,
+    "SU_Left": 15,
+    "SU_Right": 15
+   }
+  },
+  {
+   "name": "CM4",
+   "key": "CM4",
+   "counts": {
+    "Diff_Left": 32,
+    "Diff_Right": 32,
+    "SU_Left": 49,
+    "SU_Right": 51
+   }
+  },
+  {
+   "name": "CM4-CM5*",
+   "key": "CM4-CM5*",
+   "counts": {
+    "Diff_Left": 5,
+    "Diff_Right": 5
+   }
+  },
+  {
+   "name": "CP1d",
+   "key": "CP1d",
+   "counts": {
+    "Diff_Left": 8,
+    "Diff_Right": 8,
+    "SU_Left": 4,
+    "SU_Right": 4
+   }
+  },
+  {
+   "name": "CP1v",
+   "key": "CP1v",
+   "counts": {
+    "Diff_Left": 23,
+    "Diff_Right": 23,
+    "SU_Left": 10,
+    "SU_Right": 8
+   }
+  },
+  {
+   "name": "CP2/3d",
+   "key": "CP23d",
+   "counts": {
+    "Diff_Left": 19,
+    "Diff_Right": 19,
+    "SU_Left": 5,
+    "SU_Right": 5
+   }
+  },
+  {
+   "name": "CP2/3v",
+   "key": "CP23v",
+   "counts": {
+    "Diff_Left": 26,
+    "Diff_Right": 27,
+    "SU_Left": 10,
+    "SU_Right": 14
+   }
+  },
+  {
+   "name": "CP4",
+   "key": "CP4",
+   "counts": {
+    "Diff_Left": 8,
+    "Diff_Right": 8,
+    "SU_Left": 2,
+    "SU_Right": 2
+   }
+  },
+  {
+   "name": "DALcl1/2d",
+   "key": "DALcl12d",
+   "counts": {
+    "Diff_Left": 4,
+    "Diff_Right": 4,
+    "SU_Left": 11,
+    "SU_Right": 11
+   }
+  },
+  {
+   "name": "DALcl1/2v",
+   "key": "DALcl12v",
+   "counts": {
+    "Diff_Left": 23,
+    "Diff_Right": 23,
+    "SU_Left": 3,
+    "SU_Right": 2
+   }
+  },
+  {
+   "name": "DALcm1/2m",
+   "key": "DALcm12m",
+   "counts": {
+    "Diff_Left": 26,
+    "Diff_Right": 26,
+    "SU_Left": 5,
+    "SU_Right": 2
+   }
+  },
+  {
+   "name": "DALcm1/2v",
+   "key": "DALcm12v",
+   "counts": {
+    "Diff_Left": 20,
+    "Diff_Right": 20,
+    "SU_Left": 9,
+    "SU_Right": 8
+   }
+  },
+  {
+   "name": "DALd",
+   "key": "DALd",
+   "counts": {
+    "Diff_Left": 15,
+    "Diff_Right": 16,
+    "SU_Left": 6,
+    "SU_Right": 8
+   }
+  },
+  {
+   "name": "DALl1",
+   "key": "DALl1",
+   "counts": {
+    "Diff_Left": 9,
+    "Diff_Right": 9,
+    "SU_Left": 6,
+    "SU_Right": 8
+   }
+  },
+  {
+   "name": "DALv1",
+   "key": "DALv1",
+   "counts": {
+    "Diff_Left": 11,
+    "Diff_Right": 11
+   }
+  },
+  {
+   "name": "DALv2/3",
+   "key": "DALv23",
+   "counts": {
+    "Diff_Left": 18,
+    "Diff_Right": 18,
+    "SU_Left": 1,
+    "SU_Right": 1
+   }
+  },
+  {
+   "name": "DALv2/3accl",
+   "key": "DALv23accl",
+   "counts": {
+    "Diff_Left": 4,
+    "Diff_Right": 4
+   }
+  },
+  {
+   "name": "DALv2/3accm",
+   "key": "DALv23accm",
+   "counts": {
+    "Diff_Left": 2,
+    "Diff_Right": 2
+   }
+  },
+  {
+   "name": "DALv2/3accvl",
+   "key": "DALv23accvl",
+   "counts": {
+    "Diff_Left": 4,
+    "Diff_Right": 3
+   }
+  },
+  {
+   "name": "DALv2/3accvm",
+   "key": "DALv23accvm",
+   "counts": {
+    "Diff_Left": 7,
+    "Diff_Right": 7
+   }
+  },
+  {
+   "name": "DAMd1",
+   "key": "DAMd1",
+   "counts": {
+    "Diff_Left": 6,
+    "Diff_Right": 6,
+    "SU_Left": 1,
+    "SU_Right": 1
+   }
+  },
+  {
+   "name": "DAMd2/3",
+   "key": "DAMd23",
+   "counts": {
+    "Diff_Left": 6,
+    "Diff_Right": 6,
+    "SU_Left": 3,
+    "SU_Right": 3
+   }
+  },
+  {
+   "name": "DAMv1/2",
+   "key": "DAMv12",
+   "counts": {
+    "Diff_Left": 16,
+    "Diff_Right": 16
+   }
+  },
+  {
+   "name": "DILP",
+   "key": "DILP",
+   "counts": {
+    "Diff_Left": 14,
+    "Diff_Right": 14,
+    "SU_Left": 6,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "DPLal1-3",
+   "key": "DPLal1-3",
+   "counts": {
+    "Diff_Left": 34,
+    "Diff_Right": 34,
+    "SU_Left": 5,
+    "SU_Right": 4
+   }
+  },
+  {
+   "name": "DPLam",
+   "key": "DPLam",
+   "counts": {
+    "Diff_Left": 14,
+    "Diff_Right": 14,
+    "SU_Left": 1,
+    "SU_Right": 1
+   }
+  },
+  {
+   "name": "DPLc1",
+   "key": "DPLc1",
+   "counts": {
+    "Diff_Left": 9,
+    "Diff_Right": 9,
+    "SU_Left": 6,
+    "SU_Right": 6
+   }
+  },
+  {
+   "name": "DPLc2",
+   "key": "DPLc2",
+   "counts": {
+    "SU_Left": 5,
+    "SU_Right": 5
+   }
+  },
+  {
+   "name": "DPLc3",
+   "key": "DPLc3",
+   "counts": {
+    "Diff_Left": 5,
+    "Diff_Right": 5
+   }
+  },
+  {
+   "name": "DPLc4",
+   "key": "DPLc4",
+   "counts": {
+    "Diff_Left": 24,
+    "Diff_Right": 23,
+    "SU_Left": 11,
+    "SU_Right": 9
+   }
+  },
+  {
+   "name": "DPLc5a",
+   "key": "DPLc5a",
+   "counts": {
+    "Diff_Left": 7,
+    "Diff_Right": 7,
+    "SU_Left": 5,
+    "SU_Right": 4
+   }
+  },
+  {
+   "name": "DPLc5p",
+   "key": "DPLc5p",
+   "counts": {
+    "Diff_Left": 7,
+    "Diff_Right": 6,
+    "SU_Left": 4,
+    "SU_Right": 5
+   }
+  },
+  {
+   "name": "DPLd",
+   "key": "DPLd",
+   "counts": {
+    "Diff_Left": 7,
+    "Diff_Right": 7,
+    "SU_Left": 7,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "DPLl1-3",
+   "key": "DPLl1-3",
+   "counts": {
+    "Diff_Left": 17,
+    "Diff_Right": 17,
+    "SU_Left": 6,
+    "SU_Right": 6
+   }
+  },
+  {
+   "name": "DPLm1",
+   "key": "DPLm1",
+   "counts": {
+    "Diff_Left": 10,
+    "Diff_Right": 10,
+    "SU_Left": 1,
+    "SU_Right": 1
+   }
+  },
+  {
+   "name": "DPLm2",
+   "key": "DPLm2",
+   "counts": {
+    "Diff_Left": 10,
+    "Diff_Right": 10,
+    "SU_Left": 1
+   }
+  },
+  {
+   "name": "DPLp1/2",
+   "key": "DPLp12",
+   "counts": {
+    "Diff_Left": 12,
+    "Diff_Right": 12
+   }
+  },
+  {
+   "name": "DPMl1",
+   "key": "DPMl1",
+   "counts": {
+    "Diff_Left": 23,
+    "Diff_Right": 22,
+    "SU_Left": 7,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "DPMl2",
+   "key": "DPMl2",
+   "counts": {
+    "Diff_Left": 9,
+    "Diff_Right": 9,
+    "SU_Left": 7,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "DPMl3/4a",
+   "key": "DPMl34a",
+   "counts": {
+    "Diff_Left": 1,
+    "Diff_Right": 1,
+    "SU_Left": 3,
+    "SU_Right": 3
+   }
+  },
+  {
+   "name": "DPMl3/4p",
+   "key": "DPMl34p",
+   "counts": {
+    "Diff_Left": 7,
+    "Diff_Right": 7,
+    "SU_Left": 2,
+    "SU_Right": 2
+   }
+  },
+  {
+   "name": "DPMm1",
+   "key": "DPMm1",
+   "counts": {
+    "Diff_Left": 18,
+    "Diff_Right": 18,
+    "SU_Left": 27,
+    "SU_Right": 29
+   }
+  },
+  {
+   "name": "DPMm2",
+   "key": "DPMm2",
+   "counts": {
+    "Diff_Left": 18,
+    "Diff_Right": 18,
+    "SU_Left": 4,
+    "SU_Right": 4
+   }
+  },
+  {
+   "name": "DPMpl1/2",
+   "key": "DPMpl12",
+   "counts": {
+    "Diff_Left": 21,
+    "Diff_Right": 21,
+    "SU_Left": 3,
+    "SU_Right": 3
+   }
+  },
+  {
+   "name": "DPMpl3",
+   "key": "DPMpl3",
+   "counts": {
+    "Diff_Left": 11,
+    "Diff_Right": 11,
+    "SU_Left": 2,
+    "SU_Right": 3
+   }
+  },
+  {
+   "name": "DPMpm1",
+   "key": "DPMpm1",
+   "counts": {
+    "Diff_Left": 13,
+    "Diff_Right": 13,
+    "SU_Left": 13,
+    "SU_Right": 12
+   }
+  },
+  {
+   "name": "DPMpm2",
+   "key": "DPMpm2",
+   "counts": {
+    "Diff_Left": 6,
+    "Diff_Right": 6,
+    "SU_Left": 11,
+    "SU_Right": 12
+   }
+  },
+  {
+   "name": "MB-AL",
+   "key": "MB-AL",
+   "counts": {
+    "Diff_Left": 27,
+    "Diff_Right": 29,
+    "SU_Left": 7,
+    "SU_Right": 6
+   }
+  },
+  {
+   "name": "MB-AM",
+   "key": "MB-AM",
+   "counts": {
+    "Diff_Left": 28,
+    "Diff_Right": 28,
+    "SU_Right": 3
+   }
+  },
+  {
+   "name": "MB-PL",
+   "key": "MB-PL",
+   "counts": {
+    "Diff_Left": 14,
+    "Diff_Right": 14,
+    "SU_Left": 6,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "MB-PM",
+   "key": "MB-PM",
+   "counts": {
+    "Diff_Left": 21,
+    "Diff_Right": 19,
+    "SU_Left": 11,
+    "SU_Right": 11
+   }
+  },
+  {
+   "name": "OLP",
+   "key": "OLP",
+   "counts": {
+    "Diff_Left": 4,
+    "Diff_Right": 5
+   }
+  },
+  {
+   "name": "S-AN",
+   "key": "S-AN",
+   "counts": {
+    "Diff_Left": 28,
+    "Diff_Right": 28
+   }
+  },
+  {
+   "name": "S-LNa",
+   "key": "S-LNa",
+   "counts": {
+    "Diff_Left": 4,
+    "Diff_Right": 4
+   }
+  },
+  {
+   "name": "S-LNad",
+   "key": "S-LNad",
+   "counts": {
+    "Diff_Left": 7,
+    "Diff_Right": 8
+   }
+  },
+  {
+   "name": "S-LNp",
+   "key": "S-LNp",
+   "counts": {
+    "Diff_Left": 10,
+    "Diff_Right": 10
+   }
+  },
+  {
+   "name": "S-MNa",
+   "key": "S-MNa",
+   "counts": {
+    "Diff_Left": 27,
+    "Diff_Right": 28
+   }
+  },
+  {
+   "name": "S-MNp",
+   "key": "S-MNp",
+   "counts": {
+    "Diff_Left": 24,
+    "Diff_Right": 23
+   }
+  },
+  {
+   "name": "S-MNp2",
+   "key": "S-MNp2",
+   "counts": {
+    "Diff_Left": 5,
+    "Diff_Right": 5
+   }
+  },
+  {
+   "name": "S-PaN",
+   "key": "S-PaN",
+   "counts": {
+    "Diff_Left": 6,
+    "Diff_Right": 6
+   }
+  },
+  {
+   "name": "S-PNa",
+   "key": "S-PNa",
+   "counts": {
+    "Diff_Left": 35,
+    "Diff_Right": 35
+   }
+  },
+  {
+   "name": "S-PNm",
+   "key": "S-PNm",
+   "counts": {
+    "Diff_Left": 38,
+    "Diff_Right": 44
+   }
+  },
+  {
+   "name": "S-PNp",
+   "key": "S-PNp",
+   "counts": {
+    "Diff_Left": 8,
+    "Diff_Right": 8
+   }
+  },
+  {
+   "name": "TRdc",
+   "key": "TRdc",
+   "counts": {
+    "Diff_Left": 14,
+    "Diff_Right": 16
+   }
+  },
+  {
+   "name": "TRdl-a/b",
+   "key": "TRdl-ab",
+   "counts": {
+    "Diff_Left": 14,
+    "Diff_Right": 13,
+    "SU_Left": 8,
+    "SU_Right": 7
+   }
+  },
+  {
+   "name": "TRdl-c",
+   "key": "TRdl-c",
+   "counts": {
+    "Diff_Left": 4,
+    "Diff_Right": 4,
+    "SU_Left": 6,
+    "SU_Right": 6
+   }
+  },
+  {
+   "name": "TRdl-d",
+   "key": "TRdl-d",
+   "counts": {
+    "Diff_Left": 2,
+    "Diff_Right": 2
+   }
+  },
+  {
+   "name": "TRdl-e",
+   "key": "TRdl-e",
+   "counts": {
+    "Diff_Left": 7,
+    "Diff_Right": 7
+   }
+  },
+  {
+   "name": "TRdm",
+   "key": "TRdm",
+   "counts": {
+    "Diff_Left": 15,
+    "Diff_Right": 15,
+    "SU_Left": 1,
+    "SU_Right": 1
+   }
+  },
+  {
+   "name": "TRmotor",
+   "key": "TRmotor",
+   "counts": {
+    "Diff_Left": 18,
+    "Diff_Right": 18,
+    "SU_Left": 2
+   }
+  },
+  {
+   "name": "TRvm",
+   "key": "TRvm",
+   "counts": {
+    "Diff_Left": 2,
+    "Diff_Right": 2
+   }
+  },
+  {
+   "name": "Unbound",
+   "key": "Unbound",
+   "counts": {
+    "Diff_Left": 4,
+    "Diff_Right": 4
+   }
+  }
+ ],
+ "context": {
+  "brain": {
+   "file": "meshes/CNS.bin",
+   "nv": 6630,
+   "nf": 13268,
+   "center": [
+    51.7130012512207,
+    64.5009994506836,
+    95.1729965209961
+   ],
+   "min": [
+    0.9419999718666077,
+    1.7369999885559082,
+    6.468999862670898
+   ],
+   "max": [
+    102.60700225830078,
+    118.55400085449219,
+    246.16799926757812
+   ]
+  },
+  "neuropil": {
+   "file": "meshes/Neuropil.bin",
+   "nv": 21944,
+   "nf": 43890,
+   "center": [
+    52.481998443603516,
+    43.446998596191406,
+    44.79499816894531
+   ],
+   "min": [
+    -0.7269999980926514,
+    1.7430000305175781,
+    0.013000000268220901
+   ],
+   "max": [
+    92.30599975585938,
+    82.19000244140625,
+    66.16699981689453
+   ]
+  }
+ }
+}
