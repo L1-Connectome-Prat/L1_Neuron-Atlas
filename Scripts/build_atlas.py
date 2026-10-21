@@ -28,6 +28,7 @@ import flybrains
 #------------------------------------------------------------------------------
 PROJECTS_HOME   = os.environ["PROJECTS_HOME"]
 SKELETON_DIR    = f"{PROJECTS_HOME}/L1_Skeletons/Skeletons"
+TRACT_DIR       = f"{SKELETON_DIR}/Diff_Tracts"
 COMPARTMENT_DIR = f"{PROJECTS_HOME}/L1_Compartment-Atlas"
 OUTPUT_DIR      = f"{PROJECTS_HOME}/L1_Neuron-Atlas/docs/data"
 
@@ -167,6 +168,16 @@ def read_swc(path):
     return meta, nodes
 
 
+def parent_index(nodes):
+    """Map each node's parent_id to its row index (-1 for the root)."""
+    ids   = nodes.node_id.values
+    order = np.argsort(ids)
+    idx   = np.searchsorted(ids, nodes.parent_id.values, sorter = order)
+    idx   = np.clip(idx, 0, len(ids) - 1)
+
+    return np.where(nodes.parent_id.values < 0, -1, order[idx]).astype(np.int32)
+
+
 def parse_cluster(value):
     """Return the integer cluster index from '7', '07' or 's03', else None."""
     value = str(value).lstrip("s")
@@ -203,13 +214,8 @@ def build_lineage(key):
                 meta, nodes = read_swc(swc)
                 name        = meta["lineage"]
 
-                ids    = nodes.node_id.values
-                order  = np.argsort(ids)
-                idx    = np.searchsorted(ids, nodes.parent_id.values, sorter = order)
-                idx    = np.clip(idx, 0, len(ids) - 1)
-                parent = np.where(nodes.parent_id.values < 0, -1, order[idx]).astype(np.int32)
-
-                xyz  = symmetrize(nodes[["x", "y", "z"]].values)
+                parent = parent_index(nodes)
+                xyz    = symmetrize(nodes[["x", "y", "z"]].values)
                 soma = nodes.index[nodes.label == 1]
                 if len(soma):
                     s    = soma[0]
@@ -269,6 +275,8 @@ def build_lineage(key):
     info = {"name": name, "key": key, "files": files,
             "types": types, "classes": classes, "neurons": neurons}
 
+    build_tracts(info)
+
     with open(f"{OUTPUT_DIR}/lineages/{key}.json", "w") as fh:
         json.dump(info, fh, separators = (",", ":"))
 
@@ -278,6 +286,68 @@ def build_lineage(key):
 
 
 #------------------------------------------------------------------------------
+def build_tracts(info):
+    """
+    Add the pruned Diff lineage tracts to a lineage's info dict.
+
+    Tracts share bodyIds with the full skeletons, so each one is attached to
+    its Diff neuron as (tract_file, tract_offset, tract_n). Each hemisphere is
+    symmetrized in a single transform call.
+
+    """
+    key     = info["key"]
+    by_id   = {(n["id"], n["hemisphere"]): n for n in info["neurons"]
+               if n["category"] == "Diff"}
+
+    for n in by_id.values():
+        n["tract_file"] = None
+
+    for hemi in HEMISPHERES:
+        swcs = sorted(glob.glob(f"{TRACT_DIR}/{key}/{hemi}/*.swc"))
+        swcs = [s for s in swcs
+                if (int(os.path.basename(s)[:-4]), hemi) in by_id]
+        if not swcs:
+            continue
+
+        coords  = []
+        parents = []
+        offset  = 0
+        for swc in swcs:
+            _, nodes = read_swc(swc)
+            neuron   = by_id[(int(os.path.basename(swc)[:-4]), hemi)]
+
+            neuron["tract_file"]   = f"Tract_{hemi}"
+            neuron["tract_offset"] = offset
+            neuron["tract_n"]      = int(len(nodes))
+
+            coords.append(nodes[["x", "y", "z"]].values)
+            parents.append(parent_index(nodes))
+            offset += len(nodes)
+
+        xyz = symmetrize(np.concatenate(coords))
+        with open(f"{OUTPUT_DIR}/lineages/{key}/Tract_{hemi}.bin", "wb") as fh:
+            fh.write(xyz.tobytes())
+            fh.write(np.concatenate(parents).tobytes())
+
+        info["files"][f"Tract_{hemi}"] = {"path": f"lineages/{key}/Tract_{hemi}.bin",
+                                          "nodes": int(offset)}
+
+
+def update_tracts():
+    """Add tracts to the already compiled lineages without rebuilding them."""
+    for path in sorted(glob.glob(f"{OUTPUT_DIR}/lineages/*.json")):
+        with open(path) as fh:
+            info = json.load(fh)
+
+        build_tracts(info)
+
+        with open(path, "w") as fh:
+            json.dump(info, fh, separators = (",", ":"))
+
+        n = sum(1 for n in info["neurons"] if n.get("tract_file"))
+        print(f"Tracts {info['key']}: {n}")
+
+
 def update_context():
     """Rewrite only the context meshes and their manifest entry."""
     path = f"{OUTPUT_DIR}/manifest.json"
@@ -319,5 +389,7 @@ def main():
 if __name__ == "__main__":
     if "--context-only" in sys.argv:
         update_context()
+    elif "--tracts-only" in sys.argv:
+        update_tracts()
     else:
         main()

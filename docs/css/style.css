@@ -159,6 +159,14 @@ select {
   margin-bottom: 6px;
 }
 
+.check.disabled {
+  color: var(--muted);
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.check.disabled input { cursor: not-allowed; }
+
 .sliders input[type=range] {
   width: 100%;
   margin: 0 0 10px;
@@ -287,17 +295,58 @@ button.swatch:hover { outline: 2px solid var(--accent-bg); }
   outline: none;
 }
 
-#empty {
+#hint {
   position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  pointer-events: none;
-  padding: 16px;
-  text-align: center;
+  right: 16px;
+  bottom: 16px;
+  width: 290px;
+  max-width: calc(100% - 32px);
+  background: rgba(255, 255, 255, .96);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+  padding: 10px 12px;
+  transition: opacity .3s ease, transform .3s ease;
 }
+
+#hint.fade {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+
+.hint-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+#hint ul {
+  margin: 0;
+  padding-left: 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+#hint li { margin: 3px 0; }
+#hint li b { color: var(--text); font-weight: 600; }
+
+#help {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, .94);
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#help:hover { color: var(--accent); border-color: #c5c8ce; }
 
 #status {
   position: absolute;
@@ -376,7 +425,22 @@ button.swatch:hover { outline: 2px solid var(--accent-bg); }
 
 .legend-item:hover { background: #f1f2f4; }
 .legend-item.off { opacity: .35; }
-.legend-item .swatch { width: 18px; height: 4px; border-radius: 2px; }
+.legend-swatch {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.legend-swatch:hover { background: #e3e6eb; }
+.legend-swatch .dash { width: 18px; height: 4px; border-radius: 2px; }
 .legend-item .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .legend-item .count { color: var(--muted); font-variant-numeric: tabular-nums; }
 

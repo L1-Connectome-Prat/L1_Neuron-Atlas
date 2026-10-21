@@ -56,6 +56,7 @@
       <div class="seg" id="colorby">
         <button data-v="type">Type</button>
         <button data-v="class">Class</button>
+        <button data-v="lineage">Lineage</button>
       </div>
     </section>
 
@@ -64,6 +65,8 @@
       <input type="range" id="width" min="0.5" max="6" step="0.25">
       <label class="lbl" for="alpha">Neuron opacity <output id="alpha-out"></output></label>
       <input type="range" id="alpha" min="0.05" max="1" step="0.01">
+      <label class="check"><input type="checkbox" id="soma"> Soma</label>
+      <label class="check" id="tract-label"><input type="checkbox" id="tract"> Tract</label>
     </section>
 
     <section class="block sliders">
@@ -138,11 +141,22 @@
         </span>
       </div>
       <div id="legend-body"></div>
-      <p class="hint">Click to toggle · double-click to isolate</p>
+      <p class="hint">Click a name to toggle · double-click to isolate · click a color to edit it</p>
     </div>
     <div id="tooltip" hidden></div>
     <div id="status" hidden></div>
-    <div id="empty">Select a lineage to begin. Drag to rotate, right-drag to pan, scroll to zoom.</div>
+    <aside id="hint" aria-label="Tips">
+      <div class="hint-head">
+        <b>Getting started</b>
+        <button class="link" id="hint-close" aria-label="Dismiss tips">✕</button>
+      </div>
+      <ul>
+        <li>Choose a <b>lineage</b> to load its neurons, or turn on compartments on their own</li>
+        <li>Drag to rotate · right-drag to pan · scroll to zoom</li>
+        <li>In the legend, click a name to show or hide it and its color to edit it</li>
+      </ul>
+    </aside>
+    <button id="help" aria-label="Show tips" title="Show tips" hidden>?</button>
   </main>
 
   <script type="module" src="js/app.js"></script>

@@ -12,6 +12,7 @@ const DATA          = "data";
 const NA_DIFF_COLOR = "#8c8c8c";
 const NA_SU_COLOR   = "#c4c4c4";
 const SU_CLASS_COLOR = "#bdbdbd";
+const LINEAGE_COLOR = "#3e7cb1";
 const BRAIN_COLOR   = "#9aa0a8";
 const NEUROPIL_COLOR = "#8e9ab4";
 const COMP_OPACITY  = 0.18;
@@ -32,6 +33,9 @@ const DEFAULTS = {
   colorby: "type",
   width:   1.5,
   alpha:   1,
+  soma:    true,
+  tract:   false,
+  groupStyle: {},
   brainOpacity: 0.1,
   compStyle: {},
   brain:    true,
@@ -197,6 +201,7 @@ function pastel(hex) {
 }
 
 function groupKey(n) {
+  if (state.colorby === "lineage") return "L:all";
   if (state.colorby === "class") {
     return n.category === "Diff" ? `C:${n.acronym}` : "S:all";
   }
@@ -214,7 +219,9 @@ function buildGroups() {
   const both   = state.cat === "B";
   const groups = [];
 
-  if (state.colorby === "type") {
+  if (state.colorby === "lineage") {
+    groups.push({ key: "L:all", label: lineageInfo.name, color: LINEAGE_COLOR, section: "Lineage", su: false });
+  } else if (state.colorby === "type") {
     for (const t of lineageInfo.types.Diff || []) {
       const key = `D:${t.cluster ?? "NA"}`;
       if (!present.has(key)) continue;
@@ -244,8 +251,12 @@ function buildGroups() {
     }
   }
 
-  for (const g of groups) g.count = present.get(g.key);
-  return groups;
+  for (const g of groups) {
+    g.count = present.get(g.key);
+    g.base  = g.color;
+    g.color = state.groupStyle[g.key]?.c ?? g.base;
+  }
+  return groups.filter((g) => g.count);
 }
 
 function applyStyles() {
@@ -276,7 +287,8 @@ function applyStyles() {
     const key = groupKey(o.n);
     const m   = groupMats.get(key);
     o.key     = key;
-    o.line.material = m.line;
+    o.full.line.material = m.line;
+    if (o.tract) o.tract.line.material = m.line;
     if (o.soma) o.soma.material = m.soma;
     setVisible(o, !hidden.has(key));
   }
@@ -287,7 +299,7 @@ function applyStyles() {
 
 function setNeuronAlpha(m) {
   const su = m.group.su && state.cat === "B";
-  const op = state.alpha * (su ? SU_OPACITY : 1);
+  const op = state.alpha * groupAlphaOf(m.group.key) * (su ? SU_OPACITY : 1);
   for (const mat of [m.line, m.soma]) {
     const transparent = op < 1;
     if (mat.transparent !== transparent) mat.needsUpdate = true;
@@ -297,9 +309,34 @@ function setNeuronAlpha(m) {
   }
 }
 
+function groupAlphaOf(key) {
+  return state.groupStyle[key]?.a ?? 1;
+}
+
+function restyleGroup(g) {
+  const m = groupMats.get(g.key);
+  g.color = state.groupStyle[g.key]?.c ?? g.base;
+  if (m) {
+    m.line.color.set(g.color);
+    m.soma.color.set(g.color);
+    setNeuronAlpha(m);
+  }
+  document.querySelectorAll(`.legend-swatch[data-key="${CSS.escape(g.key)}"] .dash`)
+          .forEach((el) => { el.style.background = g.color; });
+  requestRender();
+  scheduleHash();
+}
+
 function setVisible(o, v) {
-  o.line.visible = v;
-  if (o.soma) o.soma.visible = v;
+  o.full.line.visible = v && o.line === o.full.line;
+  if (o.tract) o.tract.line.visible = v && o.line === o.tract.line;
+  if (o.soma) o.soma.visible = v && state.soma;
+}
+
+function refreshVisibility() {
+  const hidden = new Set(state.hidden);
+  for (const o of neuronObjs) setVisible(o, !hidden.has(o.key));
+  requestRender();
 }
 
 function applyHidden() {
@@ -338,7 +375,8 @@ function status(msg) {
 
 function clearNeurons() {
   for (const o of neuronObjs) {
-    o.line.geometry.dispose();
+    o.full.line.geometry.dispose();
+    if (o.tract) o.tract.line.geometry.dispose();
     if (o.soma) o.soma.geometry.dispose();
   }
   neuronGroup.clear();
@@ -346,14 +384,13 @@ function clearNeurons() {
   requestRender();
 }
 
-function buildNeuron(n, pos, par) {
+function buildSkeleton(n, pos, par, offset, count) {
   const segs = [];
-  const o0   = n.offset;
-  for (let i = 0; i < n.n; i++) {
-    const p = par[o0 + i];
+  for (let i = 0; i < count; i++) {
+    const p = par[offset + i];
     if (p < 0) continue;
-    const a = (o0 + p) * 3;
-    const b = (o0 + i) * 3;
+    const a = (offset + p) * 3;
+    const b = (offset + i) * 3;
     segs.push(pos[a], pos[a + 1], pos[a + 2], pos[b], pos[b + 1], pos[b + 2]);
   }
 
@@ -362,6 +399,20 @@ function buildNeuron(n, pos, par) {
   const line = new LineSegments2(geom);
   line.userData.neuron = n;
   neuronGroup.add(line);
+
+  return { line, pos, par, offset, count };
+}
+
+function useGeometry(o, g) {
+  o.line   = g.line;
+  o.pos    = g.pos;
+  o.par    = g.par;
+  o.offset = g.offset;
+  o.count  = g.count;
+}
+
+function buildNeuron(n, pos, par) {
+  const full = buildSkeleton(n, pos, par, n.offset, n.n);
 
   let soma = null;
   if (n.soma) {
@@ -372,13 +423,76 @@ function buildNeuron(n, pos, par) {
     neuronGroup.add(soma);
   }
 
-  return { n, line, soma, pos, par, key: null };
+  const o = { n, soma, full, tract: null, key: null };
+  useGeometry(o, full);
+  return o;
+}
+
+
+// ---------------------------------------------------------------------------
+// Tracts (Diff only - SU neurons keep their full skeletons)
+
+function tractsWanted() {
+  return state.tract && state.cat !== "S";
+}
+
+function tractFiles() {
+  const hemis = state.hemi === "B" ? ["Left", "Right"] : [state.hemi === "L" ? "Left" : "Right"];
+  return hemis.map((h) => `Tract_${h}`).filter((f) => lineageInfo?.files[f]);
+}
+
+async function ensureTracts(token) {
+  const files   = tractFiles();
+  const buffers = await Promise.all(files.map((f) => fetchBuffer(lineageInfo.files[f].path)));
+  if (token !== loadToken) return;
+
+  files.forEach((f, i) => {
+    const nodes = lineageInfo.files[f].nodes;
+    const pos   = new Float32Array(buffers[i], 0, nodes * 3);
+    const par   = new Int32Array(buffers[i], nodes * 12, nodes);
+    for (const o of neuronObjs) {
+      if (o.tract || o.n.tract_file !== f) continue;
+      o.tract = buildSkeleton(o.n, pos, par, o.n.tract_offset, o.n.tract_n);
+      const m = groupMats.get(o.key);
+      if (m) o.tract.line.material = m.line;
+    }
+  });
+}
+
+function applyTractMode() {
+  const on = tractsWanted();
+  for (const o of neuronObjs) {
+    useGeometry(o, on && o.tract ? o.tract : o.full);
+  }
+  refreshVisibility();
+}
+
+async function setTracts() {
+  const token = loadToken;
+  if (tractsWanted() && lineageInfo) {
+    status("Loading tracts…");
+    try {
+      await ensureTracts(token);
+    } catch (err) {
+      status(`Failed to load tracts: ${err.message}`);
+      return;
+    }
+    status("");
+  }
+  if (token === loadToken) applyTractMode();
+}
+
+function syncTractInput() {
+  const off = state.cat === "S";
+  $("tract").disabled = off;
+  $("tract").checked  = state.tract;
+  $("tract-label").classList.toggle("disabled", off);
+  $("tract-label").title = off ? "Tracts are available for Diff neurons" : "";
 }
 
 async function loadNeurons() {
   const token = ++loadToken;
   clearNeurons();
-  $("empty").hidden = !!state.lineage;
   $("legend").hidden = true;
   $("lineage-meta").textContent = "";
 
@@ -415,6 +529,14 @@ async function loadNeurons() {
       : "No neurons for this selection";
 
     applyStyles();
+    if (tractsWanted()) {
+      await ensureTracts(token);
+      if (token !== loadToken) return;
+      applyTractMode();
+    } else if (state.cat !== "S") {
+      // Warm the cache so the first switch to tracts is instant
+      for (const f of tractFiles()) fetchBuffer(lineageInfo.files[f].path).catch(() => {});
+    }
     status("");
   } catch (err) {
     status(`Failed to load: ${err.message}`);
@@ -510,63 +632,94 @@ function syncContext() {
 // Compartment color picker
 
 const picker = $("picker");
-let pickerId = null;
+let pickerTarget = null;
 
-function openPicker(id, anchor) {
-  pickerId = id;
-  $("picker-title").textContent = id;
-  $("picker-color").value = compColorOf(id);
-  $("picker-alpha").value = compAlphaOf(id);
-  $("picker-alpha-out").textContent = compAlphaOf(id).toFixed(2);
+function openPicker(target, anchor) {
+  pickerTarget = target;
+  $("picker-title").textContent = target.title;
+  $("picker-color").value = target.color();
+  $("picker-alpha").value = target.alpha();
+  $("picker-alpha-out").textContent = target.alpha().toFixed(2);
   picker.hidden = false;
 
-  // Beside the panel on wide screens, under the swatch on narrow ones
+  // Beside the panel for compartments, beside the legend for neuron groups,
+  // and under the swatch when the screen is too narrow for either
   const r      = anchor.getBoundingClientRect();
-  const panel  = $("panel").getBoundingClientRect();
-  const beside = panel.right + picker.offsetWidth + 16 <= window.innerWidth;
-  const left   = beside ? panel.right + 8 : r.left;
-  const top    = beside ? r.top - 12 : r.bottom + 6;
-  picker.style.left = `${Math.max(8, Math.min(left, window.innerWidth - picker.offsetWidth - 8))}px`;
+  const pw     = picker.offsetWidth;
+  const legend = anchor.closest("#legend");
+  let left, top;
+  if (legend) {
+    const lr = legend.getBoundingClientRect();
+    const fits = lr.left - pw - 8 >= 8;
+    left = fits ? lr.left - pw - 8 : r.left;
+    top  = fits ? r.top - 12 : r.bottom + 6;
+  } else {
+    const panel  = $("panel").getBoundingClientRect();
+    const beside = panel.right + pw + 16 <= window.innerWidth;
+    left = beside ? panel.right + 8 : r.left;
+    top  = beside ? r.top - 12 : r.bottom + 6;
+  }
+  picker.style.left = `${Math.max(8, Math.min(left, window.innerWidth - pw - 8))}px`;
   picker.style.top  = `${Math.max(8, Math.min(top, window.innerHeight - picker.offsetHeight - 8))}px`;
 }
 
 function closePicker() {
   picker.hidden = true;
-  pickerId = null;
+  pickerTarget = null;
 }
 
-function updatePicked(patch) {
-  if (!pickerId) return;
-  const cur = state.compStyle[pickerId] || {};
-  state.compStyle[pickerId] = { ...cur, ...patch };
-  document.querySelectorAll(`.node-row .swatch[data-id="${CSS.escape(pickerId)}"]`)
-          .forEach((el) => { el.style.background = compColorOf(pickerId); });
-  applyOpacity();
-  scheduleHash();
+function togglePicker(target, anchor) {
+  pickerTarget?.key === target.key ? closePicker() : openPicker(target, anchor);
+}
+
+function compTarget(id) {
+  const paint = () => {
+    document.querySelectorAll(`.node-row .swatch[data-id="${CSS.escape(id)}"]`)
+            .forEach((el) => { el.style.background = compColorOf(id); });
+    applyOpacity();
+    scheduleHash();
+  };
+  return {
+    key:   `comp:${id}`,
+    title: id,
+    color: () => compColorOf(id),
+    alpha: () => compAlphaOf(id),
+    set:   (patch) => { state.compStyle[id] = { ...state.compStyle[id], ...patch }; paint(); },
+    reset: () => { delete state.compStyle[id]; paint(); },
+  };
+}
+
+function groupTarget(g) {
+  return {
+    key:   `group:${g.key}`,
+    title: g.label,
+    color: () => g.color,
+    alpha: () => groupAlphaOf(g.key),
+    set:   (patch) => { state.groupStyle[g.key] = { ...state.groupStyle[g.key], ...patch }; restyleGroup(g); },
+    reset: () => { delete state.groupStyle[g.key]; restyleGroup(g); },
+  };
 }
 
 function bindPicker() {
-  $("picker-color").addEventListener("input", (e) => updatePicked({ c: e.target.value }));
+  $("picker-color").addEventListener("input", (e) => pickerTarget?.set({ c: e.target.value }));
   $("picker-alpha").addEventListener("input", (e) => {
     $("picker-alpha-out").textContent = (+e.target.value).toFixed(2);
-    updatePicked({ a: +e.target.value });
+    pickerTarget?.set({ a: +e.target.value });
   });
   $("picker-reset").addEventListener("click", () => {
-    if (!pickerId) return;
-    const id = pickerId;
-    const sw = document.querySelector(`.node-row .swatch[data-id="${CSS.escape(id)}"]`);
-    delete state.compStyle[id];
-    if (sw) sw.style.background = compColorOf(id);
-    applyOpacity();
-    scheduleHash();
-    if (sw) openPicker(id, sw);
+    if (!pickerTarget) return;
+    pickerTarget.reset();
+    $("picker-color").value = pickerTarget.color();
+    $("picker-alpha").value = pickerTarget.alpha();
+    $("picker-alpha-out").textContent = pickerTarget.alpha().toFixed(2);
   });
   $("picker-close").addEventListener("click", closePicker);
   document.addEventListener("pointerdown", (e) => {
-    if (!picker.hidden && !picker.contains(e.target) && !e.target.closest(".node-row .swatch")) closePicker();
+    if (!picker.hidden && !picker.contains(e.target) && !e.target.closest(".swatch-btn")) closePicker();
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePicker(); });
   $("panel").addEventListener("scroll", closePicker);
+  $("legend-body").addEventListener("scroll", closePicker);
 }
 
 function toggleComp(key) {
@@ -597,12 +750,12 @@ function renderTree() {
     };
 
     const sw = document.createElement("button");
-    sw.className = "swatch";
+    sw.className = "swatch swatch-btn";
     sw.dataset.id = comp.id;
     sw.title = `Color / opacity of ${comp.id}`;
     sw.setAttribute("aria-label", `Color and opacity of ${comp.id}`);
     sw.style.background = compColorOf(comp.id);
-    sw.onclick = () => (pickerId === comp.id ? closePicker() : openPicker(comp.id, sw));
+    sw.onclick = () => togglePicker(compTarget(comp.id), sw);
 
     const name = document.createElement("span");
     name.className = "node-name";
@@ -642,7 +795,7 @@ function renderLegend() {
   const hidden = new Set(state.hidden);
   body.innerHTML = "";
   $("legend").hidden = groupList.length === 0;
-  $("legend-title").textContent = state.colorby === "type" ? "Types" : "Classes";
+  $("legend-title").textContent = { type: "Types", class: "Classes", lineage: "Lineage" }[state.colorby];
 
   let section = null;
   const sections = new Set(groupList.map((g) => g.section)).size > 1;
@@ -657,10 +810,19 @@ function renderLegend() {
     }
     const el = document.createElement("div");
     el.className = "legend-item" + (hidden.has(g.key) ? " off" : "");
-    el.title = g.label;
-    el.innerHTML = `<span class="swatch"></span><span class="name"></span><span class="count"></span>`;
-    el.querySelector(".swatch").style.background = g.color;
+    el.innerHTML = `<button class="legend-swatch swatch-btn"><span class="dash"></span></button>`
+                 + `<span class="name"></span><span class="count"></span>`;
+
+    const sw = el.querySelector(".legend-swatch");
+    sw.dataset.key = g.key;
+    sw.title = `Color / opacity of ${g.label}`;
+    sw.setAttribute("aria-label", `Color and opacity of ${g.label}`);
+    sw.querySelector(".dash").style.background = g.color;
+    sw.onclick = (e) => { e.stopPropagation(); togglePicker(groupTarget(g), sw); };
+    sw.ondblclick = (e) => e.stopPropagation();
+
     el.querySelector(".name").textContent = g.label;
+    el.querySelector(".name").title = `${g.label} - click to toggle, double-click to isolate`;
     el.querySelector(".count").textContent = g.count;
 
     let clickTimer = null;
@@ -721,7 +883,7 @@ function hover(e) {
   for (const o of neuronObjs) {
     if (!o.line.visible) continue;
     targets.push(o.line);
-    if (o.soma) targets.push(o.soma);
+    if (o.soma?.visible) targets.push(o.soma);
   }
   const hit = raycaster.intersectObjects(targets, false)[0];
   if (!hit) { tip.hidden = true; return; }
@@ -746,7 +908,7 @@ function hover(e) {
 
 function filename(ext) {
   const lin = lineageInfo ? lineageInfo.name.replace(/[\/\s]/g, "") : "L1";
-  return `L1-Atlas_${lin}_${state.colorby}.${ext}`;
+  return `L1-Atlas_${lin}_${state.colorby}${tractsWanted() ? "_tract" : ""}.${ext}`;
 }
 
 function download(href, name) {
@@ -790,23 +952,23 @@ function exportPNG() {
 function neuronPolylines(o) {
   // Split the tree into unbranched chains, each walked from a leaf or
   // branch point up to the next branch point or root
-  const { n, par } = o;
-  const kids = new Int32Array(n.n);
-  for (let i = 0; i < n.n; i++) {
-    const p = par[n.offset + i];
+  const { par, offset, count } = o;
+  const kids = new Int32Array(count);
+  for (let i = 0; i < count; i++) {
+    const p = par[offset + i];
     if (p >= 0) kids[p]++;
   }
   const chains = [];
-  for (let i = 0; i < n.n; i++) {
-    if (par[n.offset + i] < 0) continue;
+  for (let i = 0; i < count; i++) {
+    if (par[offset + i] < 0) continue;
     if (kids[i] === 1) continue;
     const chain = [i];
     let j = i;
     while (true) {
-      const p = par[n.offset + j];
+      const p = par[offset + j];
       if (p < 0) break;
       chain.push(p);
-      if (kids[p] !== 1 || par[n.offset + p] < 0) break;
+      if (kids[p] !== 1 || par[offset + p] < 0) break;
       j = p;
     }
     chains.push(chain);
@@ -828,14 +990,14 @@ function exportSVG() {
 
   const visible = neuronObjs.filter((o) => o.line.visible);
   const items   = visible.map((o) => {
-    const pts = new Array(o.n.n);
+    const pts = new Array(o.count);
     let depth = 0;
-    for (let i = 0; i < o.n.n; i++) {
-      const k = (o.n.offset + i) * 3;
+    for (let i = 0; i < o.count; i++) {
+      const k = (o.offset + i) * 3;
       pts[i]  = project(o.pos[k], o.pos[k + 1], o.pos[k + 2]);
       depth  += pts[i][2];
     }
-    return { o, pts, depth: depth / o.n.n };
+    return { o, pts, depth: depth / o.count };
   });
   items.sort((a, b) => b.depth - a.depth);
 
@@ -856,7 +1018,8 @@ function exportSVG() {
   for (const g of groupList) {
     const list = byGroup.get(g.key);
     if (!list) continue;
-    const m = groupMats.get(g.key).line;
+    const m = groupMats.get(g.key)?.line;
+    if (!m) continue;
     out.push(`<g id="${esc(g.label)}" stroke="${g.color}" stroke-width="${m.linewidth}"${m.opacity < 1 ? ` stroke-opacity="${m.opacity}"` : ""}>`);
     for (const it of list) {
       let d = "";
@@ -867,7 +1030,7 @@ function exportSVG() {
         });
       }
       out.push(`<path data-name="${esc(it.o.n.name)}" d="${d}"/>`);
-      if (it.o.soma) {
+      if (it.o.soma && state.soma) {
         const s = it.o.n.soma;
         const c = project(s[0], s[1], s[2]);
         const r = Math.min(Math.max(s[3], 0.3), 6) * pxPerUm * camera.zoom;
@@ -907,6 +1070,11 @@ function writeHash() {
   const cs = Object.entries(state.compStyle)
                    .map(([id, v]) => `${id}~${(v.c || "").replace("#", "")}~${v.a ?? ""}`);
   if (cs.length)            p.set("cs", cs.join(","));
+  const gs = Object.entries(state.groupStyle)
+                   .map(([k, v]) => `${k}~${(v.c || "").replace("#", "")}~${v.a ?? ""}`);
+  if (gs.length)            p.set("gs", gs.join(","));
+  if (!state.soma)          p.set("so", "0");
+  if (state.tract)          p.set("tr", "1");
   if (!state.brain)         p.set("bm", "0");
   if (state.neuropil)       p.set("np", "1");
   if (state.comps.length)   p.set("comp", state.comps.join(","));
@@ -934,6 +1102,17 @@ function readHash() {
       s.compStyle[id] = v;
     }
   }
+  if (p.get("gs")) {
+    for (const item of p.get("gs").split(",")) {
+      const [k, c, a] = item.split("~");
+      const v = {};
+      if (c) v.c = `#${c}`;
+      if (a) v.a = +a;
+      s.groupStyle[k] = v;
+    }
+  }
+  if (p.has("so"))   s.soma     = p.get("so") !== "0";
+  if (p.has("tr"))   s.tract    = p.get("tr") === "1";
   if (p.has("bm"))   s.brain    = p.get("bm") !== "0";
   if (p.has("np"))   s.neuropil = p.get("np") === "1";
   if (p.get("comp")) s.comps   = p.get("comp").split(",");
@@ -971,6 +1150,8 @@ function syncInputs() {
   $("opacity").value = state.brainOpacity;
   $("width-out").textContent   = `${state.width}px`;
   $("opacity-out").textContent = state.brainOpacity.toFixed(2);
+  $("soma").checked     = state.soma;
+  syncTractInput();
   $("brain").checked    = state.brain;
   $("neuropil").checked = state.neuropil;
   syncers.forEach((f) => f());
@@ -987,15 +1168,17 @@ function bindControls() {
     sel.append(opt);
   }
   sel.addEventListener("change", () => {
-    state.lineage = sel.value;
-    state.hidden  = [];
+    state.lineage    = sel.value;
+    state.hidden     = [];
+    state.groupStyle = {};
+    closePicker();
     loadNeurons();
     scheduleHash();
   });
 
   syncers.push(bindSeg("hemi", "hemi", () => { loadNeurons(); }));
-  syncers.push(bindSeg("cat", "cat", () => { state.hidden = []; loadNeurons(); }));
-  syncers.push(bindSeg("colorby", "colorby", () => { state.hidden = []; if (lineageInfo) applyStyles(); }));
+  syncers.push(bindSeg("cat", "cat", () => { state.hidden = []; closePicker(); syncTractInput(); loadNeurons(); }));
+  syncers.push(bindSeg("colorby", "colorby", () => { state.hidden = []; closePicker(); if (lineageInfo) applyStyles(); }));
 
   $("views").addEventListener("click", (e) => {
     const b = e.target.closest("button");
@@ -1025,6 +1208,18 @@ function bindControls() {
     state.brainOpacity = +e.target.value;
     $("opacity-out").textContent = state.brainOpacity.toFixed(2);
     applyOpacity();
+    scheduleHash();
+  });
+
+  $("soma").addEventListener("change", (e) => {
+    state.soma = e.target.checked;
+    refreshVisibility();
+    scheduleHash();
+  });
+
+  $("tract").addEventListener("change", (e) => {
+    state.tract = e.target.checked;
+    setTracts();
     scheduleHash();
   });
 
@@ -1066,6 +1261,34 @@ function bindControls() {
   });
 }
 
+// Tips card: shown on every page load until the first real interaction,
+// then a "?" brings it back
+
+function dismissHint() {
+  const hint = $("hint");
+  if (hint.hidden || hint.classList.contains("fade")) return;
+  hint.classList.add("fade");
+  setTimeout(() => { hint.hidden = true; $("help").hidden = false; }, 300);
+}
+
+function showHint() {
+  const hint = $("hint");
+  $("help").hidden = true;
+  hint.hidden = false;
+  requestAnimationFrame(() => hint.classList.remove("fade"));
+}
+
+function bindHint() {
+  $("hint-close").addEventListener("click", dismissHint);
+  $("help").addEventListener("click", showHint);
+  canvas.addEventListener("pointerdown", dismissHint);
+  canvas.addEventListener("wheel", dismissHint, { passive: true });
+  for (const id of ["panel", "legend"]) {
+    $(id).addEventListener("click", (e) => { if (e.target.closest("button, select, input, .legend-item")) dismissHint(); });
+    $(id).addEventListener("change", dismissHint);
+  }
+}
+
 function flash(btn, text) {
   const old = btn.textContent;
   btn.textContent = text;
@@ -1094,6 +1317,7 @@ async function init() {
   Object.assign(state, readHash());
   bindControls();
   bindPicker();
+  bindHint();
   syncInputs();
   resize();
   if (!applyCamera(state.cam)) setView("frontal");
