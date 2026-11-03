@@ -100,6 +100,7 @@ const center       = new THREE.Vector3();
 function resize() {
   const w = canvas.clientWidth;
   const h = canvas.clientHeight;
+  if (!w || !h) return;
   renderer.setSize(w, h, false);
   const aspect = w / h;
   camera.left   = -viewHalfHeight * aspect;
@@ -143,7 +144,7 @@ const VIEWS = {
 let extent = [100, 100, 100];
 
 function fitZoom(axes) {
-  const aspect = canvas.clientWidth / canvas.clientHeight;
+  const aspect = canvas.clientWidth / canvas.clientHeight || 1.6;
   const need   = Math.max(extent[axes[1]] / 2, extent[axes[0]] / 2 / aspect) * 1.08;
   return viewHalfHeight / need;
 }
@@ -1058,8 +1059,13 @@ function scheduleHash() {
   hashTimer = setTimeout(writeHash, 300);
 }
 
+// Keys owned by the other tabs, carried over when this tab writes the link
+const SHARED_KEYS = ["tab", "lvl", "lin", "ilvl", "ireg"];
+
 function writeHash() {
-  const p = new URLSearchParams();
+  const p   = new URLSearchParams();
+  const cur = new URLSearchParams(location.hash.slice(1));
+  for (const k of SHARED_KEYS) if (cur.has(k)) p.set(k, cur.get(k));
   if (state.lineage)        p.set("l", state.lineage);
   if (state.hemi !== "B")   p.set("h", state.hemi);
   if (state.cat !== "D")    p.set("c", state.cat);
@@ -1303,10 +1309,14 @@ async function init() {
   manifest = await fetchJSON("manifest.json");
   palette  = manifest.palette;
 
+  // Atlas palette: Level 1 colours for the top of the tree, Level 2 for its children
+  let atlasColors = { level1: {}, level2: {} };
+  try { atlasColors = await fetchJSON("compartment_colors.json"); } catch {}
   let i = 0;
+  const fallback = () => COMPARTMENT_COLORS[i++ % COMPARTMENT_COLORS.length];
   for (const p of manifest.compartments) {
-    compColor.set(p.id, COMPARTMENT_COLORS[i++ % COMPARTMENT_COLORS.length]);
-    for (const c of p.children) compColor.set(c.id, COMPARTMENT_COLORS[i++ % COMPARTMENT_COLORS.length]);
+    compColor.set(p.id, atlasColors.level1[p.id] ?? fallback());
+    for (const c of p.children) compColor.set(c.id, atlasColors.level2[c.id] ?? fallback());
   }
 
   const brain = manifest.context.brain;

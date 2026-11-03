@@ -4,11 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>L1 Neuron Atlas</title>
-  <meta name="description" content="Interactive 3D viewer of differentiated and SU neurons and compartments in the first-instar Drosophila larval connectome.">
+  <meta name="description" content="Interactive atlas of neuron anatomy, compartment connectivity, and lineage innervation in the first-instar Drosophila larval connectome.">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="img/logo-64.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=2026-10-21">
+  <link rel="stylesheet" href="css/style.css?v=2026-11-02-171517">
   <script type="importmap">
   {
     "imports": {
@@ -19,13 +22,23 @@
   </script>
 </head>
 <body>
-  <aside id="panel">
-    <header class="brand">
-      <h1>L1 Neuron Atlas</h1>
-      <p>First-instar <i>Drosophila</i> larval connectome · PK_L1CNSsym</p>
-    </header>
+  <header id="topbar">
+    <div class="topbar-brand">
+      <img class="topbar-logo" src="img/logo-64.png" alt="" width="28" height="28">
+      <b>L1 Neuron Atlas</b>
+      <span>First-instar <i>Drosophila</i> larval connectome</span>
+    </div>
+    <nav id="tabs" role="tablist" aria-label="Atlas views">
+      <button role="tab" data-tab="anatomy">Anatomy</button>
+      <button role="tab" data-tab="connectivity"><span class="long">Compartment </span>Connectivity</button>
+      <button role="tab" data-tab="innervation"><span class="long">Lineage </span>Innervation</button>
+    </nav>
+    <button class="about-btn" id="about-open" aria-label="About the atlas">About</button>
+  </header>
 
-    <section class="block">
+  <div id="tab-anatomy" class="tab-view anatomy-view" role="tabpanel">
+  <aside id="panel">
+    <section class="block first">
       <label class="lbl" for="lineage">Lineage</label>
       <select id="lineage">
         <option value="">Select a lineage…</option>
@@ -158,7 +171,113 @@
     </aside>
     <button id="help" aria-label="Show tips" title="Show tips" hidden>?</button>
   </main>
+  </div>
 
-  <script type="module" src="js/app.js?v=2026-10-21"></script>
+  <div id="tab-connectivity" class="tab-view split-view" role="tabpanel" hidden>
+    <aside class="side-panel">
+      <section class="block first">
+        <span class="lbl">Compartment level</span>
+        <div class="seg" id="conn-level">
+          <button data-v="1">Level 1</button>
+          <button data-v="2">Level 2</button>
+        </div>
+      </section>
+
+      <section class="block">
+        <span class="lbl">Selection</span>
+        <div class="readout" id="conn-readout"></div>
+      </section>
+
+      <section class="block">
+        <span class="lbl">Compartments</span>
+        <div class="map-card">
+          <svg id="mini-anterior" role="img" aria-label="Anterior view of the central brain compartments"></svg>
+          <span class="map-tag">Anterior</span>
+          <span class="map-side at-left">R</span><span class="map-side at-right">L</span>
+        </div>
+        <div class="map-card">
+          <svg id="mini-dorsal" role="img" aria-label="Dorsal view of the compartments with the SEZ and VNC"></svg>
+          <span class="map-tag">Dorsal</span>
+          <span class="map-side at-top">R</span><span class="map-side at-bottom">L</span>
+        </div>
+      </section>
+    </aside>
+
+    <main class="figure-stage">
+      <header class="figure-head">
+        <h2>Compartment connectivity</h2>
+        <p>Directed connection weight from each source compartment (rows) to each target (columns). Hover a square, or a compartment name to follow its row or column.</p>
+      </header>
+      <div class="figure-body" id="conn-figure"></div>
+    </main>
+  </div>
+
+  <div id="tab-innervation" class="tab-view split-view" role="tabpanel" hidden>
+    <aside class="side-panel">
+      <section class="block first">
+        <span class="lbl">Compartment level</span>
+        <div class="seg" id="inn-level">
+          <button data-v="1">Level 1</button>
+          <button data-v="2">Level 2</button>
+        </div>
+      </section>
+
+      <section class="block" id="inn-region-block" hidden>
+        <span class="lbl">Region</span>
+        <div class="seg" id="inn-region">
+          <button data-v="brain">Brain</button>
+          <button data-v="vnc">SEZ–VNC</button>
+        </div>
+      </section>
+
+      <section class="block">
+        <span class="lbl">Lineage</span>
+        <div class="readout" id="inn-readout"></div>
+      </section>
+
+      <section class="block">
+        <span class="lbl">Tracts</span>
+        <div class="map-card">
+          <svg id="tract-map" role="img" aria-label="Anterior view of the lineage tracts over the Level 1 compartments"></svg>
+          <span class="map-tag">Anterior</span>
+          <span class="map-side at-left">R</span><span class="map-side at-right">L</span>
+        </div>
+      </section>
+    </aside>
+
+    <main class="figure-stage">
+      <header class="figure-head">
+        <h2>Lineage innervation <span class="chip-level" id="inn-chip">Level 1</span></h2>
+        <p>Fraction of each lineage's inputs (PSDs) and outputs (TBars) in every compartment, ipsilateral and contralateral to the lineage. Hover a lineage to preview its tracts, click to keep it.</p>
+      </header>
+      <div class="figure-body" id="inn-figure"></div>
+    </main>
+  </div>
+
+  <div id="mx-tooltip" hidden></div>
+
+  <div id="about" role="dialog" aria-modal="true" aria-labelledby="about-title" hidden>
+    <div class="about-card">
+      <div class="picker-head">
+        <b id="about-title">L1 Neuron Atlas</b>
+        <button class="link" id="about-close" aria-label="Close">✕</button>
+      </div>
+      <p>An interactive atlas of the first-instar <i>Drosophila</i> larval connectome, in symmetrized PK_L1CNSsym space.</p>
+      <ul>
+        <li><b>Anatomy</b> draws the differentiated and SU neurons of each lineage, their tracts, and the neuropil compartments in 3D.</li>
+        <li><b>Compartment Connectivity</b> shows the directed connection weights between compartments at Level 1 and Level 2.</li>
+        <li><b>Lineage Innervation</b> shows the fraction of each lineage's inputs and outputs in every Level 1 and Level 2 compartment, including the SEZ and VNC.</li>
+      </ul>
+      <p class="hint">Data:
+        <a href="https://github.com/KandimallaPrat/L1_Skeletons" target="_blank" rel="noopener">L1_Skeletons</a> ·
+        <a href="https://github.com/L1-Connectome-Prat/L1_Compartment-Atlas" target="_blank" rel="noopener">L1_Compartment-Atlas</a> ·
+        <a href="https://github.com/L1-Connectome-Prat/L1_Neuron-Typing" target="_blank" rel="noopener">L1_Neuron-Typing</a> ·
+        <a href="https://github.com/L1-Connectome-Prat/L1_Compartment-Connectivity" target="_blank" rel="noopener">L1_Compartment-Connectivity</a>
+      </p>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js?v=2026-11-02-171517"></script>
+  <script type="module" src="js/tabs.js?v=2026-11-02-171517"></script>
 </body>
 </html>
