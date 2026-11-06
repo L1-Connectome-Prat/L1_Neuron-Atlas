@@ -69,6 +69,27 @@ $("about").addEventListener("click", (e) => { if (e.target.id === "about") $("ab
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("about").hidden = true; });
 
 
+// ---------------------------------------------------------------------------
+// Controls drawer on tablets and phones: the panel slides in over the view.
+// On wider screens the CSS keeps the panel in place and none of this shows.
+
+const scrim = document.createElement("div");
+scrim.id = "panel-scrim";
+document.body.append(scrim);
+
+function setDrawer(open) {
+  document.body.classList.toggle("panel-open", open);
+  $("panel-toggle").setAttribute("aria-expanded", open);
+}
+
+$("panel-toggle").addEventListener("click", () => setDrawer(!document.body.classList.contains("panel-open")));
+scrim.addEventListener("click", () => setDrawer(false));
+document.querySelectorAll(".drawer-close").forEach((b) => b.addEventListener("click", () => setDrawer(false)));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("picker").hidden) setDrawer(false); });
+matchMedia("(max-width: 1024px)").addEventListener("change", () => setDrawer(false));
+$("tabs").addEventListener("click", () => setDrawer(false));
+
+
 // A pasted link that only changes the #... part reloads the whole view
 window.addEventListener("hashchange", () => location.reload());
 

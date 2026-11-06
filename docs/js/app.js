@@ -54,6 +54,7 @@ const state = structuredClone(DEFAULTS);
 let manifest     = null;
 let lineageInfo  = null;
 let palette      = [];
+let atlasLevel1  = {};
 let neuronObjs   = [];
 let groupMats    = new Map();
 let groupList    = [];
@@ -635,12 +636,39 @@ function syncContext() {
 const picker = $("picker");
 let pickerTarget = null;
 
+// Swatches: the atlas Level 1 colours for compartments, the neuron palette for groups
+function pickerSwatches(target) {
+  const list = target.key.startsWith("comp:") ? Object.values(atlasLevel1) : palette;
+  return [...new Set(list.map((c) => c.toLowerCase()))].slice(0, 16);
+}
+
+function syncPicker() {
+  const t = pickerTarget;
+  if (!t) return;
+  const c = t.color().toLowerCase();
+  const a = t.alpha();
+  $("picker-color").value = c;
+  $("picker-alpha").value = a;
+  $("picker-alpha-out").textContent = a.toFixed(2);
+  $("picker-dot").style.background = c;
+  $("picker-preview").style.background = c;
+  $("picker-preview").style.opacity = a;
+  $("picker-alpha").style.accentColor = c;
+  $("picker-swatches").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.c === c));
+}
+
 function openPicker(target, anchor) {
   pickerTarget = target;
   $("picker-title").textContent = target.title;
-  $("picker-color").value = target.color();
-  $("picker-alpha").value = target.alpha();
-  $("picker-alpha-out").textContent = target.alpha().toFixed(2);
+  $("picker-swatches").replaceChildren(...pickerSwatches(target).map((c) => {
+    const b = document.createElement("button");
+    b.dataset.c = c;
+    b.style.background = c;
+    b.title = c;
+    b.setAttribute("aria-label", `Color ${c}`);
+    return b;
+  }));
+  syncPicker();
   picker.hidden = false;
 
   // Beside the panel for compartments, beside the legend for neuron groups,
@@ -702,19 +730,19 @@ function groupTarget(g) {
 }
 
 function bindPicker() {
-  $("picker-color").addEventListener("input", (e) => pickerTarget?.set({ c: e.target.value }));
-  $("picker-alpha").addEventListener("input", (e) => {
-    $("picker-alpha-out").textContent = (+e.target.value).toFixed(2);
-    pickerTarget?.set({ a: +e.target.value });
+  $("picker-color").addEventListener("input", (e) => { pickerTarget?.set({ c: e.target.value }); syncPicker(); });
+  $("picker-alpha").addEventListener("input", (e) => { pickerTarget?.set({ a: +e.target.value }); syncPicker(); });
+  $("picker-swatches").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (b) { pickerTarget?.set({ c: b.dataset.c }); syncPicker(); }
   });
   $("picker-reset").addEventListener("click", () => {
     if (!pickerTarget) return;
     pickerTarget.reset();
-    $("picker-color").value = pickerTarget.color();
-    $("picker-alpha").value = pickerTarget.alpha();
-    $("picker-alpha-out").textContent = pickerTarget.alpha().toFixed(2);
+    syncPicker();
   });
   $("picker-close").addEventListener("click", closePicker);
+  $("picker-done").addEventListener("click", closePicker);
   document.addEventListener("pointerdown", (e) => {
     if (!picker.hidden && !picker.contains(e.target) && !e.target.closest(".swatch-btn")) closePicker();
   });
@@ -1312,6 +1340,7 @@ async function init() {
   // Atlas palette: Level 1 colours for the top of the tree, Level 2 for its children
   let atlasColors = { level1: {}, level2: {} };
   try { atlasColors = await fetchJSON("compartment_colors.json"); } catch {}
+  atlasLevel1 = atlasColors.level1;
   let i = 0;
   const fallback = () => COMPARTMENT_COLORS[i++ % COMPARTMENT_COLORS.length];
   for (const p of manifest.compartments) {

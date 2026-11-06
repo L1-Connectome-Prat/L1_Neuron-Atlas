@@ -167,7 +167,11 @@ function layout(opts, cell) {
   return { font, between, colTop, head, top, geo, gridH, gridR: x, labBot, width, height };
 }
 
+const PHONE = matchMedia("(max-width: 760px)");
+const TOUCH = matchMedia("(hover: none) and (pointer: coarse)").matches;
+
 function fitCell(container, opts, min, max) {
+  if (PHONE.matches) min = Math.max(5, Math.round(min * 0.6));
   const W    = container.clientWidth;
   const H    = container.clientHeight;
   const cols = opts.panels.reduce((s, p) => s + p.cols.length, 0);
@@ -343,7 +347,7 @@ function drawMatrix(container, opts) {
 
   // Pointer events, dispatched to the caller
   let current = "";
-  svg.addEventListener("mousemove", (e) => {
+  const track = (e) => {
     const t = e.target;
     const d = t.dataset || {};
     if (t.classList.contains("cell")) {
@@ -357,8 +361,15 @@ function drawMatrix(container, opts) {
     } else if (!t.classList.contains("bg")) {
       if (current) { current = ""; api.clear(); hideTip(); opts.onLeave(); }
     }
+  };
+  const leave = () => { current = ""; api.clear(); hideTip(); opts.onLeave(); };
+  svg.addEventListener("mousemove", track);
+  svg.addEventListener("mouseleave", leave);
+  // Touch has no hover: a tap reads the square, a tap elsewhere clears it
+  svg.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") track(e); });
+  document.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse" && current && !svg.contains(e.target)) leave();
   });
-  svg.addEventListener("mouseleave", () => { current = ""; api.clear(); hideTip(); opts.onLeave(); });
   svg.addEventListener("click", (e) => {
     const d = e.target.dataset || {};
     if (e.target.classList.contains("cell") || d.kind === "row") opts.onClick?.(+d.r);
@@ -440,7 +451,7 @@ function connReadout(kind, src, tgt, block, ri, ci) {
   const r = $("conn-readout");
   r.replaceChildren();
   if (!kind) {
-    r.append(h("div", "idle", "Hover a square to read a connection, or a compartment name to follow its row or column."));
+    r.append(h("div", "idle", `${TOUCH ? "Tap" : "Hover"} a square to read a connection, or a compartment name to follow its row or column.`));
     return;
   }
   if (kind === "cell") {
@@ -516,8 +527,28 @@ function syncLevel() {
   $("conn-level").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.v === conn.level));
 }
 
+// The weight formula, typeset with KaTeX when it loads; plain text otherwise
+
+const KATEX = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/";
+const WEIGHT_TEX = String.raw`\begin{aligned} w(s \rightarrow t) &= \Big(\sum_{i \in \mathcal{S}} \mathrm{PSDs}_i(s)\Big) \\ &\times \frac{\sum_{i \in \mathcal{S}} \mathrm{TBars}_i(t)}{\sum_{j \in t} \mathrm{TBars}_j(t)} \end{aligned}`;
+
+async function typesetFormula() {
+  try {
+    const css = document.createElement("link");
+    css.rel  = "stylesheet";
+    css.href = `${KATEX}katex.min.css`;
+    document.head.append(css);
+    const { default: katex } = await import(`${KATEX}katex.mjs`);
+    katex.render(WEIGHT_TEX, $("conn-formula"), { displayMode: true, throwOnError: false });
+    $("conn-terms").querySelectorAll("dt[data-tex]").forEach((dt) => {
+      katex.render(dt.dataset.tex, dt, { throwOnError: false });
+    });
+  } catch { /* the plain-text fallback stays */ }
+}
+
 export async function mountConnectivity(l) {
   link = l;
+  typesetFormula();
   await loadShared();
   conn.level = link.getParam("lvl") === "2" ? "2" : "1";
   syncLevel();
@@ -542,7 +573,7 @@ function innReadout(name, neurons) {
   const r = $("inn-readout");
   r.replaceChildren();
   if (!name) {
-    r.append(h("div", "idle", "Hover a lineage to preview its tracts. Click it to keep it in view."));
+    r.append(h("div", "idle", TOUCH ? "Tap a lineage to keep its tracts in view." : "Hover a lineage to preview its tracts. Click it to keep it in view."));
     return;
   }
   r.append(h("div", "value", name));

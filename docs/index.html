@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=2026-11-02-171517">
+  <link rel="stylesheet" href="css/style.css?v=2026-11-06-135554">
   <script type="importmap">
   {
     "imports": {
@@ -33,11 +33,18 @@
       <button role="tab" data-tab="connectivity"><span class="long">Compartment </span>Connectivity</button>
       <button role="tab" data-tab="innervation"><span class="long">Lineage </span>Innervation</button>
     </nav>
-    <button class="about-btn" id="about-open" aria-label="About the atlas">About</button>
+    <div class="topbar-actions">
+      <button class="about-btn panel-toggle" id="panel-toggle" aria-label="Show controls" aria-expanded="false">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Controls
+      </button>
+      <button class="about-btn" id="about-open" aria-label="About the atlas">About</button>
+    </div>
   </header>
 
   <div id="tab-anatomy" class="tab-view anatomy-view" role="tabpanel">
   <aside id="panel">
+    <div class="drawer-head"><b>Controls</b><button class="link drawer-close" aria-label="Hide controls">✕</button></div>
     <section class="block first">
       <label class="lbl" for="lineage">Lineage</label>
       <select id="lineage">
@@ -108,7 +115,7 @@
       </div>
     </section>
 
-    <section class="block">
+    <section class="block desktop-only">
       <span class="lbl">Export</span>
       <div class="row">
         <select id="png-scale" aria-label="PNG scale">
@@ -134,13 +141,19 @@
 
   <div id="picker" role="dialog" aria-label="Compartment color" hidden>
     <div class="picker-head">
-      <b id="picker-title"></b>
+      <b class="picker-title"><span class="swatch" id="picker-dot"></span><span id="picker-title"></span></b>
       <button class="link" id="picker-close" aria-label="Close">✕</button>
     </div>
-    <label class="picker-row">Color <input type="color" id="picker-color"></label>
+    <span class="lbl">Color</span>
+    <div class="picker-swatches" id="picker-swatches"></div>
+    <label class="picker-row">Custom <input type="color" id="picker-color"></label>
     <label class="lbl" for="picker-alpha">Opacity <output id="picker-alpha-out"></output></label>
+    <div class="picker-preview"><span id="picker-preview"></span></div>
     <input type="range" id="picker-alpha" min="0" max="1" step="0.01">
-    <button class="link" id="picker-reset">Reset to default</button>
+    <div class="picker-foot">
+      <button class="link" id="picker-reset">Reset to default</button>
+      <button class="btn" id="picker-done">Done</button>
+    </div>
   </div>
 
   <main id="stage">
@@ -165,7 +178,8 @@
       </div>
       <ul>
         <li>Choose a <b>lineage</b> to load its neurons, or turn on compartments on their own</li>
-        <li>Drag to rotate · right-drag to pan · scroll to zoom</li>
+        <li class="mouse-only">Drag to rotate · right-drag to pan · scroll to zoom</li>
+        <li class="touch-only">Drag to rotate · pinch to zoom · two-finger drag to pan</li>
         <li>In the legend, click a name to show or hide it and its color to edit it</li>
       </ul>
     </aside>
@@ -175,7 +189,25 @@
 
   <div id="tab-connectivity" class="tab-view split-view" role="tabpanel" hidden>
     <aside class="side-panel">
+      <div class="drawer-head"><b>Controls</b><button class="link drawer-close" aria-label="Hide controls">✕</button></div>
       <section class="block first">
+        <span class="lbl">Connection weight</span>
+        <div class="formula">
+          <div class="formula-eq" id="conn-formula">w(s → t) = Source PSDs × Target T-bars ⁄ Total T-bars</div>
+          <details class="terms">
+            <summary>Terms</summary>
+            <dl id="conn-terms">
+              <dt data-tex="\mathcal{S}">𝒮</dt><dd>Neurons with at least one postsynaptic density in <i>s</i> and a fragment in <i>t</i></dd>
+              <dt data-tex="\textstyle\sum_{i \in \mathcal{S}} \mathrm{PSDs}_i(s)">Source PSDs</dt><dd>Postsynaptic densities those neurons collect in <i>s</i></dd>
+              <dt data-tex="\textstyle\sum_{i \in \mathcal{S}} \mathrm{TBars}_i(t)">Target T-bars</dt><dd>T-bars those neurons contribute in <i>t</i></dd>
+              <dt data-tex="\textstyle\sum_{j \in t} \mathrm{TBars}_j(t)">Total T-bars</dt><dd>T-bars of every neuron with a fragment in <i>t</i></dd>
+            </dl>
+            <p class="hint">Pairs with an empty 𝒮 are omitted. Intrinsic connectivity follows the same rule.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="block">
         <span class="lbl">Compartment level</span>
         <div class="seg" id="conn-level">
           <button data-v="1">Level 1</button>
@@ -206,7 +238,7 @@
     <main class="figure-stage">
       <header class="figure-head">
         <h2>Compartment connectivity</h2>
-        <p>Directed connection weight from each source compartment (rows) to each target (columns). Hover a square, or a compartment name to follow its row or column.</p>
+        <p>Directed connection weight from each source compartment (rows) to each target (columns). <span class="mouse-only">Hover a square, or a compartment name to follow its row or column.</span><span class="touch-only">Tap a square to read its weight, or a compartment name to follow its row or column.</span></p>
       </header>
       <div class="figure-body" id="conn-figure"></div>
     </main>
@@ -214,6 +246,7 @@
 
   <div id="tab-innervation" class="tab-view split-view" role="tabpanel" hidden>
     <aside class="side-panel">
+      <div class="drawer-head"><b>Controls</b><button class="link drawer-close" aria-label="Hide controls">✕</button></div>
       <section class="block first">
         <span class="lbl">Compartment level</span>
         <div class="seg" id="inn-level">
@@ -248,7 +281,7 @@
     <main class="figure-stage">
       <header class="figure-head">
         <h2>Lineage innervation <span class="chip-level" id="inn-chip">Level 1</span></h2>
-        <p>Fraction of each lineage's inputs (PSDs) and outputs (TBars) in every compartment, ipsilateral and contralateral to the lineage. Hover a lineage to preview its tracts, click to keep it.</p>
+        <p>Fraction of each lineage's inputs (PSDs) and outputs (TBars) in every compartment, ipsilateral and contralateral to the lineage. <span class="mouse-only">Hover a lineage to preview its tracts, click to keep it.</span><span class="touch-only">Tap a lineage to keep its tracts in the Controls panel.</span></p>
       </header>
       <div class="figure-body" id="inn-figure"></div>
     </main>
@@ -259,25 +292,36 @@
   <div id="about" role="dialog" aria-modal="true" aria-labelledby="about-title" hidden>
     <div class="about-card">
       <div class="picker-head">
-        <b id="about-title">L1 Neuron Atlas</b>
+        <b id="about-title" class="about-title"><img src="img/logo-64.png" alt="" width="24" height="24"> L1 Neuron Atlas</b>
         <button class="link" id="about-close" aria-label="Close">✕</button>
       </div>
-      <p>An interactive atlas of the first-instar <i>Drosophila</i> larval connectome, in symmetrized PK_L1CNSsym space.</p>
-      <ul>
-        <li><b>Anatomy</b> draws the differentiated and SU neurons of each lineage, their tracts, and the neuropil compartments in 3D.</li>
-        <li><b>Compartment Connectivity</b> shows the directed connection weights between compartments at Level 1 and Level 2.</li>
-        <li><b>Lineage Innervation</b> shows the fraction of each lineage's inputs and outputs in every Level 1 and Level 2 compartment, including the SEZ and VNC.</li>
+      <p class="about-lede">An interactive atlas of the first-instar <i>Drosophila</i> larval connectome, in symmetrized PK_L1CNSsym space.</p>
+
+      <span class="lbl">Views</span>
+      <dl class="about-views">
+        <dt>Anatomy</dt><dd>The differentiated and SU neurons of each lineage, their tracts, and the neuropil compartments in 3D.</dd>
+        <dt>Compartment Connectivity</dt><dd>Directed connection weights between compartments at Level 1 and Level 2.</dd>
+        <dt>Lineage Innervation</dt><dd>The fraction of each lineage's inputs and outputs in every Level 1 and Level 2 compartment, including the SEZ and VNC.</dd>
+      </dl>
+
+      <span class="lbl">Use</span>
+      <ul class="about-use">
+        <li>Each view is held in the page address. <b>Copy link</b> on the Anatomy tab records the lineage, colors, and camera; the heatmap tabs record the level and the kept lineage.</li>
+        <li>The color square of a compartment in the tree, or of a group in the legend, sets its color and opacity.</li>
+        <li>On phones and tablets, <b>Controls</b> opens the panel.</li>
       </ul>
-      <p class="hint">Data:
-        <a href="https://github.com/KandimallaPrat/L1_Skeletons" target="_blank" rel="noopener">L1_Skeletons</a> ·
-        <a href="https://github.com/L1-Connectome-Prat/L1_Compartment-Atlas" target="_blank" rel="noopener">L1_Compartment-Atlas</a> ·
-        <a href="https://github.com/L1-Connectome-Prat/L1_Neuron-Typing" target="_blank" rel="noopener">L1_Neuron-Typing</a> ·
+
+      <span class="lbl">Data</span>
+      <div class="about-links">
+        <a href="https://github.com/KandimallaPrat/L1_Skeletons" target="_blank" rel="noopener">L1_Skeletons</a>
+        <a href="https://github.com/L1-Connectome-Prat/L1_Compartment-Atlas" target="_blank" rel="noopener">L1_Compartment-Atlas</a>
+        <a href="https://github.com/L1-Connectome-Prat/L1_Neuron-Typing" target="_blank" rel="noopener">L1_Neuron-Typing</a>
         <a href="https://github.com/L1-Connectome-Prat/L1_Compartment-Connectivity" target="_blank" rel="noopener">L1_Compartment-Connectivity</a>
-      </p>
+      </div>
     </div>
   </div>
 
-  <script type="module" src="js/app.js?v=2026-11-02-171517"></script>
-  <script type="module" src="js/tabs.js?v=2026-11-02-171517"></script>
+  <script type="module" src="js/app.js?v=2026-11-06-135554"></script>
+  <script type="module" src="js/tabs.js?v=2026-11-06-135554"></script>
 </body>
 </html>
